@@ -1,19 +1,33 @@
-
-
 <template>
-  <div id="app">
-  <MainPage></MainPage>
-  </div>
+  <v-app>
+    <v-app-bar
+      app
+      color="primary"
+      dark
+    >
+    </v-app-bar>
+
+    <v-main>
+      <!-- <HelloWorld/> -->
+      <MainPage/>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import MainPage from './pages/MainPage.vue'
+// import HelloWorld from './components/HelloWorld';
+import MainPage from './pages/MainPage.vue';
 
 export default {
   name: 'App',
-  components: {
-    MainPage,
-  }
-}
-</script>
 
+  components: {
+    // HelloWorld,
+    MainPage,
+  },
+
+  data: () => ({
+    //
+  }),
+};
+</script>

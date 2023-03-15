@@ -1,36 +1,34 @@
 <template>
-    <div>
-      <li v-for="res in posts.data" :key="res.id">
-        <!-- {{ post.id }}
-         {{ post.text }} -->
-         {{ res }}
-         <!-- {{ res}} -->
-      </li>
-    </div>
-    </template>
+  <div>
+    <Post
+      v-for="post in posts"
+      v-bind:key="post.id"
+      :post="post"
+    />
+  </div>
+</template>
       
-  <script>
-  import axios from 'axios';
-
-  export default {
-    name: 'Post',
-    components: {
-      
-    },
-    data: () => {
-    return {
-      posts: []
-    };
+<script>
+import axios from 'axios';
+import Post from '../components/Post.vue';
+export default {
+  name: 'Posts',
+  components: {
+    Post,
   },
-  mounted() {
-    axios
-      .get('http://127.0.0.1:8000/posts/')
-      .then(response => {(this.posts = response); console.log(response)});
-  }
-    // props: ['data']
-  }
-  </script>
+  data: () => {
+  return {
+    posts: []
+  };
+},
+mounted() {
+  axios
+    .get('http://127.0.0.1:8000/posts/')
+    .then(response => {(this.posts = response.data); console.log(this.posts)});
+},
+}
+</script>
   
-  <style>
-    
-  </style>
+<style>
+  
+</style>

@@ -4,9 +4,7 @@
 
 <template>
   <div id="main-page">
-  <Posts>
-
-  </Posts>
+  <Posts/>
   </div>
 </template>
   
