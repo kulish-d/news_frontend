@@ -19,13 +19,13 @@ export default {
   data: () => {
   return {
     posts: []
-  };
-},
-mounted() {
-  axios
-    .get('http://127.0.0.1:8000/posts/')
-    .then(response => {(this.posts = response.data); console.log(this.posts)});
-},
+    };
+  },
+  mounted() {
+    axios
+      .get('http://127.0.0.1:8000/posts/')
+      .then(response => {(this.posts = response.data); console.log(this.posts)});
+  },
 }
 </script>
   
