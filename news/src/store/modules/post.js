@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios_request from '../../../api/post'
 export default {
   actions: {
     async fetchPosts(ctx) {
-      await axios
-      .get('http://127.0.0.1:8000/posts/')
+      await axios_request
+      .get('/posts/')
       .then(response => {(this.posts = response.data); console.log(this.posts)});
       ctx.commit('updatePosts', this.posts)
     },
