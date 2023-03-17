@@ -1,7 +1,7 @@
 <template>
   <div>
     <Post
-      v-for="post in posts"
+      v-for="post in allPosts"
       v-bind:key="post.id"
       :post="post"
     />
@@ -9,23 +9,21 @@
 </template>
       
 <script>
-import axios from 'axios';
+
+import {mapGetters, mapActions} from 'vuex';
+
 import Post from '../components/Post.vue';
+
 export default {
   name: 'Posts',
   components: {
     Post,
   },
-  data: () => {
-  return {
-    posts: []
-    };
-  },
-  mounted() {
-    axios
-      .get('http://127.0.0.1:8000/posts/')
-      .then(response => {(this.posts = response.data); console.log(this.posts)});
-  },
+  computed: mapGetters(['allPosts']),
+  methods: mapActions(['fetchPosts']),
+  async mounted() {
+    this.fetchPosts();
+  }
 }
 </script>
   

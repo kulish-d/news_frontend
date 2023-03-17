@@ -1,7 +1,3 @@
-<!-- import Header from 'components.Header.vue' -->
-
-<!-- import Posts from 'components.Posts.vue' -->
-
 <template>
   <div id="main-page">
   <Header/>
