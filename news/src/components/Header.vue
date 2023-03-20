@@ -3,7 +3,8 @@
     id="head"
     app
     color="primary"
-    dark>
+    dark
+  >
 
     <div id="head-btn-grp">
       <v-btn 
