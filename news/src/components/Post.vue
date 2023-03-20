@@ -1,32 +1,31 @@
-<!-- <template>
-  <div>
-    <li v-for="post in posts" :key="post.id">
-      {{ post.id }}
-       {{ post.title }}
-    </li>
-  </div>
-  </template>
+<template>
+  <v-col>
+    <v-card elevation="10" outlined shaped>
+      <v-card-title>{{ post.title }}</v-card-title>
+      <v-card-subtitle>{{post.author}}</v-card-subtitle>
+      <v-card-text>{{ post.text }}</v-card-text>
+      <div v-if="post.tags">
+        <PostTag
+          :tag="tag.text"
+          v-bind:key="tag.id"
+          v-for="tag in post.tags"
+        />
+      </div>
+    </v-card>
+  </v-col>
+</template>
     
 <script>
-import Post
+import PostTag from '../components/PostTag.vue'
 export default {
   name: 'Post',
   components: {
-    
+    PostTag,
   },
-  // data() {
-  //   return {
-  //     posts: [
-  //       { id: 1, title: 'My journey with Vue' },
-  //       { id: 2, title: 'Blogging with Vue' },
-  //       { id: 3, title: 'Why Vue is so fun' }
-  //     ]
-  //   }
-  // }
-  // props: ['data']
+  props: ['post'],
 }
 </script>
 
 <style>
   
-</style> -->
+</style>

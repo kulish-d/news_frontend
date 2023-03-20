@@ -1,19 +1,23 @@
-
-
 <template>
-  <div id="app">
-  <MainPage></MainPage>
-  </div>
+  <v-app>
+    <v-main>
+      <MainPage/>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import MainPage from './pages/MainPage.vue'
 
+import MainPage from './pages/MainPage.vue';
 export default {
   name: 'App',
+
   components: {
     MainPage,
-  }
-}
-</script>
+  },
 
+  data: () => ({
+    //
+  }),
+};
+</script>
