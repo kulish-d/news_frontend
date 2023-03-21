@@ -134,6 +134,6 @@ export default {
 
 <style scoped>
   #head-btn {
-    margin: 15px;
+    /* margin: 20px; */
   }
 </style>

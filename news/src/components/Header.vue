@@ -6,9 +6,11 @@
     dark
   >
    
-      <RegisterForm
-        
-      />
+    <RegisterForm
+    />
+
+    <AuthForm 
+    />
       
   </v-app-bar>
 </template>
@@ -16,15 +18,12 @@
 
 <script>
 import RegisterForm from './RegisterForm.vue';
+import AuthForm from './AuthForm.vue';
 export default {
   name: 'Header',
   components: {
     RegisterForm,
-  },
-  mounted: {
-    attrsPrint() {
-      
-    },
+    AuthForm,
   },
 }
 </script>

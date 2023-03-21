@@ -8,28 +8,25 @@ export default {
             email: regForm.email,
             password: regForm.password
         })
-        .then(response => {(console.log(response.data)); console.log(this.users)});
-        // ctx.commit('updateUsers', this.user)
     },
 
-    // async fetchUsers(ctx) {
-    //   await axios_request
-    //   .get('/users/')
-    //   .then(response => {(this.users = response.data); console.log(this.users)});
-    //   ctx.commit('updatePosts', this.users)
-    // },
+    async authUser(ctx, authForm) {
+            axios_request
+            .post('/auth/jwt/create/', {
+                username: authForm.username,
+                email:    authForm.email,
+                password: authForm.password
+            })
+        .then(res => localStorage.username = res.data.access)
+        // ctx.commit('updateUsers', this.user)
+    },
   },
   mutations: {
-    updateUsers(state, user) {
-      state.users.push(user)
-    }
   },
   state: {
     users: []
   },
   getters: {
-    allUsers(state) {
-      return state.users
-    }
+    
   }
 }
