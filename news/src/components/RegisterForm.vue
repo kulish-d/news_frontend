@@ -28,6 +28,7 @@
                 <v-text-field
                   label="Username"
                   required
+                  v-model="RegistrationForm.username"
                 >
                 
                 </v-text-field>
@@ -36,6 +37,7 @@
                 <v-text-field
                   label="Email"
                   required
+                  v-model="RegistrationForm.email"
                 >
                 
                 </v-text-field>
@@ -45,6 +47,7 @@
                   label="Password"
                   type="password"
                   required
+                  v-model="RegistrationForm.password"
                 >
                 
                 </v-text-field>
@@ -52,6 +55,7 @@
                   label="Password (again)"
                   type="password"
                   required
+                  v-model="RegistrationForm.password2"
                 >
                 </v-text-field>
               </v-col>
@@ -70,7 +74,7 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="dialog = false"
+            @click="createUser()"
           >
             Save
           </v-btn>
@@ -82,23 +86,48 @@
 
 
 <script>
+
 export default {
   name: 'RegisterForm',
   components: {
   },
 
-  mounted:  {
-    attrsPrint() {
-      console.log();
-      return this.Username;
-    },
+  data () {
+    return {
+      dialog: false,
+      RegistrationForm: {
+        username: '',
+        email: '',
+        password: '',
+        password2: '',
+      }
+    }
   },
-  
 
-  data: () => ({
-    dialog: false,
-    Username: null,
-  }),
+  methods: {
+    printData() {
+      console.log(this.RegistrationForm)
+    },
+    createUser() {
+      console.log('create start');
+      if (this.RegistrationForm.password === this.RegistrationForm.password2) {
+      this.$store
+      .dispatch('createUser', this.RegistrationForm)
+      .then(() =>
+        this.dialog = false,
+        this.RegistrationForm.username = '',
+        this.RegistrationForm.email = '',
+        this.RegistrationForm.password = '',
+        this.RegistrationForm.password2 = '',
+        console.log('created!') 
+      )
+      }
+    }
+  },
+
+  mounted() {
+      this.printData()
+  }
 
 }
 </script>
