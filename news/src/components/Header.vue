@@ -6,11 +6,23 @@
     dark
   >
    
-    <RegisterForm
-    />
+  <v-btn
+    id="head-btn-logout"
+    color="teal lighten-1"
+    v-if="hasUser()"
+    elevation="15"
+    large
+    v-bind="attrs"
+    v-on:click="logOut()"
+  >
+    Log Out
+  </v-btn>
 
-    <AuthForm 
-    />
+  <RegisterForm
+  />
+
+  <AuthForm 
+  />
       
   </v-app-bar>
 </template>
@@ -25,6 +37,14 @@ export default {
     RegisterForm,
     AuthForm,
   },
+  methods: {
+    hasUser() {
+      return this.$store.user;
+    },
+    logOut() {
+      return this.$store.dispatch('logoutUser');
+    }
+  }
 }
 </script>
 

@@ -19,11 +19,17 @@ export default {
       axios_request
       .post('/auth/jwt/create/', user)
       .then((res) => {
-        localStorage.user = res.data.access;
+        localStorage.token = res.data.access;
         ctx.commit('updateUser', user)
       })
     },
+
+    logoutUser(ctx) {
+      localStorage.token = null;
+      ctx.commit('updateUser', {})
+    }
   },
+  
   mutations: {
     updateUser(state, some_user) {
       state.user = some_user;
