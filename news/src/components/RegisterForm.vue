@@ -47,10 +47,12 @@
                   label="Password"
                   type="password"
                   required
+                  hint="latin 8+ symbols: Upper & lower letters + digits + spec"
                   v-model="RegistrationForm.password"
                 >
                 
                 </v-text-field>
+
                 <v-text-field
                   label="Password (again)"
                   type="password"
@@ -59,6 +61,33 @@
                 >
                 </v-text-field>
               </v-col>
+            </v-row>
+            <v-row>
+              <v-alert
+                border="left"
+                color="red"
+                type="warning"
+                v-if="RegistrationForm.password != RegistrationForm.password2"
+                >
+                Passwords must be equal!
+              </v-alert>
+
+              <v-alert
+                  border="left"
+                  color="red"
+                  type="warning"
+                  v-if="!passwordValidator(RegistrationForm.password)"
+                  >
+                  Password can't be easy!
+                </v-alert>
+              <v-alert
+                border="left"
+                color="red"
+                type="warning"
+                v-if="!emailValidator(RegistrationForm.email)"
+                >
+                Not valid Email!
+              </v-alert>
             </v-row>
           </v-container>
         </v-card-text>
@@ -95,12 +124,15 @@ export default {
   data () {
     return {
       dialog: false,
+      
       RegistrationForm: {
         username: '',
         email: '',
         password: '',
         password2: '',
-      }
+      },
+
+      passwordIsValid: 0,
     }
   },
 
@@ -108,26 +140,33 @@ export default {
     printData() {
       console.log(this.RegistrationForm)
     },
+    passwordValidator(str) {
+      return /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/g.test(str);
+    },
+    emailValidator(str) {
+      // eslint-disable-next-line no-useless-escape
+      return /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(str);
+    },
     createUser() {
-      console.log('create start');
-      if (this.RegistrationForm.password === this.RegistrationForm.password2) {
-      this.$store
-      .dispatch('createUser', this.RegistrationForm)
-      .then(() =>
-        this.dialog = false,
-        this.RegistrationForm.username = '',
-        this.RegistrationForm.email = '',
-        this.RegistrationForm.password = '',
-        this.RegistrationForm.password2 = '',
-        console.log('created!') 
+      if (this.RegistrationForm.password === this.RegistrationForm.password2
+       && this.passwordValidator(this.RegistrationForm.password) && this.emailValidator(this.RegistrationForm.email)) {
+        this.$store
+        .dispatch('createUser', this.RegistrationForm)
+        .then(() =>
+          this.dialog = false,
+          this.RegistrationForm.username = '',
+          this.RegistrationForm.email = '',
+          this.RegistrationForm.password = '',
+          this.RegistrationForm.password2 = '',
+          console.log('created!') 
       )
       }
     }
   },
 
-  mounted() {
-      this.printData()
-  }
+  // mounted() {
+  //     this.printData()
+  // }
 
 }
 </script>
@@ -135,5 +174,8 @@ export default {
 <style scoped>
   #head-btn {
     /* margin: 20px; */
+  }
+  .v-alert {
+    margin: 0 10px 10px 0 ;
   }
 </style>

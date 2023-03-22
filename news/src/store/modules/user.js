@@ -11,22 +11,30 @@ export default {
     },
 
     async authUser(ctx, authForm) {
-            axios_request
-            .post('/auth/jwt/create/', {
-                username: authForm.username,
-                email:    authForm.email,
-                password: authForm.password
-            })
-        .then(res => localStorage.username = res.data.access)
-        // ctx.commit('updateUsers', this.user)
+      const user = {
+        username: authForm.username,
+        email:    authForm.email,
+        password: authForm.password,
+      }
+      axios_request
+      .post('/auth/jwt/create/', user)
+      .then((res) => {
+        localStorage.user = res.data.access;
+        ctx.commit('updateUser', user)
+      })
     },
   },
   mutations: {
+    updateUser(state, some_user) {
+      state.user = some_user;
+    }
   },
   state: {
-    users: []
+    user: {}
   },
   getters: {
-    
+    getUser(state) {
+      return state.user;
+    }
   }
 }
