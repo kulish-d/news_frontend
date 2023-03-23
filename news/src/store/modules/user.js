@@ -1,46 +1,54 @@
 import axios_request from '../../../api/post'
 export default {
+  state: {
+    userID: null,
+    username: null,
+  },
   actions: {
     async createUser(ctx, regForm) {
         await axios_request
-        .post('/auth/users/', {
+        .post('/signup/', {
             username: regForm.username,
             email: regForm.email,
             password: regForm.password
         })
+        .then((response) => {if (response.statusText === 'OK') {
+          ctx.commit('updateUser', response.data.id, response.data.username)
+        }})
     },
 
     async authUser(ctx, authForm) {
-      const user = {
-        username: authForm.username,
-        email:    authForm.email,
-        password: authForm.password,
-      }
       axios_request
-      .post('/auth/jwt/create/', user)
-      .then((res) => {
-        localStorage.token = res.data.access;
-        ctx.commit('updateUser', user)
+      .post('/token/login/', {
+        email: authForm.email,
+        password: authForm.password,
       })
+      .then((res) => {if (res.statusText === 'OK') {
+        localStorage.token = res.data.access;
+      }})
     },
 
     logoutUser(ctx) {
-      localStorage.token = null;
-      ctx.commit('updateUser', {})
+      localStorage.token = '';
+      console.log(ctx, 'logout!');
+      ctx.commit('updateUser', null, null)
     }
   },
   
   mutations: {
-    updateUser(state, some_user) {
-      state.user = some_user;
+    updateUser(state, id, name) {
+      state.userID = id;
+      state.username = name,
+      console.log(state.username)
     }
   },
-  state: {
-    user: {}
-  },
+
   getters: {
-    getUser(state) {
-      return state.user;
+    // getUser(state) {
+    //   return state.username;
+    // },
+    isAuth(state) {
+      return !!state.userID
     }
   }
 }

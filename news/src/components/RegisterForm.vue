@@ -13,6 +13,7 @@
           large
           v-bind="attrs"
           v-on="on"
+          v-if="!isAuth"
         >
           Sign Up
         </v-btn>
@@ -115,7 +116,7 @@
 
 
 <script>
-
+import {mapGetters} from 'vuex';
 export default {
   name: 'RegisterForm',
   components: {
@@ -152,18 +153,20 @@ export default {
        && this.passwordValidator(this.RegistrationForm.password) && this.emailValidator(this.RegistrationForm.email)) {
         this.$store
         .dispatch('createUser', this.RegistrationForm)
-        .then(() =>
-          this.dialog = false,
-          this.RegistrationForm.username = '',
-          this.RegistrationForm.email = '',
-          this.RegistrationForm.password = '',
-          this.RegistrationForm.password2 = '',
-          console.log('created!') 
-      )
+        .then(() => console.log('created!') 
+        )
+        .then(() => this.$store.dispatch('authUser', this.RegistrationForm))
+        .then((res) => {console.log(res, 'auth!')
+          this.dialog = false;
+          this.RegistrationForm.username = '';
+          this.RegistrationForm.email = '';
+          this.RegistrationForm.password = '';
+          this.RegistrationForm.password2 = ''
+        })
       }
     }
   },
-
+  computed: mapGetters(['isAuth']),
   // mounted() {
   //     this.printData()
   // }
