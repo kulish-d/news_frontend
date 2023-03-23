@@ -5,19 +5,7 @@
       persistent
       width="600"
     >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          id="head-btn-auth"
-          color="black"
-          elevation="15"
-          large
-          v-bind="attrs"
-          v-on="on"
-          v-if="!isAuth"
-        >
-          Sign In
-        </v-btn>
-      </template>
+    
       <v-card>
         <v-card-title>
           <span class="text-h5">Auth</span>
@@ -35,15 +23,6 @@
                 </v-text-field>
               </v-col>
               <v-row>
-              <v-col cols="12">
-                <!-- <v-text-field
-                  label="Username"
-                  required
-                  v-model="AuthForm.username"
-                >
-                
-                </v-text-field> -->
-              </v-col>
               </v-row>
               <v-row>
               <v-col cols="12">
@@ -94,7 +73,6 @@
       return {
         dialog: false,
         AuthForm: {
-          username: '',
           email: '',
           password: '',
         }
@@ -110,10 +88,9 @@
       .dispatch('authUser', this.AuthForm)
       .then(() =>
         this.dialog = false,
-        this.AuthForm.username = '',
         this.AuthForm.email = '',
         this.AuthForm.password = '',
-        console.log('auth!!') 
+        console.log('auth?') 
       )
       }
   },

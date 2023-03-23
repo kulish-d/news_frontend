@@ -4,6 +4,7 @@ export default {
     userID: null,
     username: null,
   },
+  
   actions: {
     async createUser(ctx, regForm) {
         await axios_request
@@ -44,9 +45,6 @@ export default {
   },
 
   getters: {
-    // getUser(state) {
-    //   return state.username;
-    // },
     isAuth(state) {
       return !!state.userID
     }

@@ -5,19 +5,7 @@
       persistent
       width="1024"
     >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          id="head-btn"
-          color="purple darken-1"
-          elevation="15"
-          large
-          v-bind="attrs"
-          v-on="on"
-          v-if="!isAuth"
-        >
-          Sign Up
-        </v-btn>
-      </template>
+
       <v-card>
         <v-card-title>
           <span class="text-h5">Registration</span>
@@ -132,8 +120,6 @@ export default {
         password: '',
         password2: '',
       },
-
-      passwordIsValid: 0,
     }
   },
 
