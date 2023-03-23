@@ -5,22 +5,9 @@
     color="primary"
     dark
   >
-  
-  <span
-    id="user-label"
-    v-if="isAuth"
-  >
-    {{ this.$store.state.username }}
-  </span>
 
-  <v-avatar
-    color="teal"
-    size="48"
-    v-if="isAuth"
-  >
-  </v-avatar>
-
-  <div id="buttons-bar"
+  <div
+    id="not-authed-user-bar"
     v-if="!isAuth"
   >
     <v-btn
@@ -46,22 +33,39 @@
     </v-btn>
   </div>
 
-  <v-btn v-else
-    id="head-btn-logout"
-    color="teal lighten-1"
-    elevation="15"
-    large
-    v-on:click="logOut()"
+  <div
+    v-else
+    id="auth-user-bar"
   >
-    Log Out
-  </v-btn>
+    <span
+      id="user-label"
+    >
+      {{ this.$store.state.username }}
+    </span>
+
+    <v-avatar
+      color="teal"
+      size="48"
+    >
+    </v-avatar>
+
+    <v-btn
+      id="head-btn-logout"
+      color="teal lighten-1"
+      elevation="15"
+      large
+      v-on:click="logOut()"
+    >
+      Log Out
+    </v-btn>
+  </div>
 
   <RegisterForm
   />
 
-  <AuthForm 
+  <AuthForm
   />
-      
+
   </v-app-bar>
 </template>
 
@@ -95,10 +99,5 @@ export default {
     display: flex;
     justify-content: end;
   }
-  #head-btn-logout {
-    margin-right: 50px;
-  }
-  .v-avatar, #user-label {
-    margin-right: 25px;
-  }
+
 </style>
