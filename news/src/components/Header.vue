@@ -10,15 +10,20 @@
     id="not-authed-user-bar"
     v-if="!isAuth"
   >
-    <v-btn
-      id="head-btn-auth"
-      color="black"
-      elevation="15"
-      large
-      v-on="openDialog()"
-    >
-      Sign In
-    </v-btn>
+
+      <v-btn
+        id="head-btn-auth"
+        color="black"
+        elevation="15"
+        large
+        v-on:click="this.dialogProp = true"
+      >
+        Sign In
+      </v-btn>
+
+      <AuthForm
+        v-bind:dialogProp="dialogProp"
+      />
 
     <v-btn
       id="head-btn-register"
@@ -61,10 +66,6 @@
   <RegisterForm
   />
 
-  <AuthForm
-    :isOpen="isOpen"
-  />
-
   </v-app-bar>
 </template>
 
@@ -82,7 +83,7 @@ export default {
 
   data() {
     return {
-      isOpen: false,
+      dialogProp: false,
     }
   },
 
@@ -91,9 +92,6 @@ export default {
       return this.$store.dispatch('logoutUser');
     },
 
-  openDialog() {
-    this.isOpen = true;
-  }
   },
   computed: mapGetters(['isAuth']),
 }

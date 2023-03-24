@@ -95,12 +95,8 @@
       }
   },
   computed: mapGetters(['isAuth']),
-  
-  updated() {
-    if (this.isOpen) this.dialog = true;
-  },
 
-  props: ['isOpen']
+  props: ['dialogProp'],
 
   }
   
