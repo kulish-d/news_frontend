@@ -95,12 +95,15 @@
       }
   },
   computed: mapGetters(['isAuth']),
-    
-  }
-  // mounted() {
-  //     this.printData()
-  // }
+  
+  updated() {
+    if (this.isOpen) this.dialog = true;
+  },
 
+  props: ['isOpen']
+
+  }
+  
 </script>
   
 <style scoped>

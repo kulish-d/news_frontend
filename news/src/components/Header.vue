@@ -15,19 +15,17 @@
       color="black"
       elevation="15"
       large
-      v-bind="attrs"
-      v-on="on"
+      v-on="openDialog()"
     >
       Sign In
     </v-btn>
 
     <v-btn
-      id="head-btn"
+      id="head-btn-register"
       color="purple darken-1"
       elevation="15"
       large
-      v-bind="attrs"
-      v-on="on"
+
     >
       Sign Up
     </v-btn>
@@ -64,6 +62,7 @@
   />
 
   <AuthForm
+    :isOpen="isOpen"
   />
 
   </v-app-bar>
@@ -81,13 +80,20 @@ export default {
     AuthForm,
   },
 
+  data() {
+    return {
+      isOpen: false,
+    }
+  },
+
   methods: {
     logOut() {
       return this.$store.dispatch('logoutUser');
     },
-    openDialog() {
-      
-    }
+
+  openDialog() {
+    this.isOpen = true;
+  }
   },
   computed: mapGetters(['isAuth']),
 }
