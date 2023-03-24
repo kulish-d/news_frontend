@@ -11,40 +11,43 @@
     v-if="!isAuth"
   >
 
-      <v-btn
-        id="head-btn-auth"
-        color="black"
-        elevation="15"
-        large
-        v-on:click="this.dialogProp = true"
-      >
-        Sign In
-      </v-btn>
+    <v-btn
+      id="head-btn-auth"
+      color="black"
+      elevation="15"
+      large
+      v-on:click="openAuthForm"
+    >
+      Sign In
+    </v-btn>
 
-      <AuthForm
-        v-bind:dialogProp="dialogProp"
-      />
+    <AuthForm
+    />
 
     <v-btn
       id="head-btn-register"
       color="purple darken-1"
       elevation="15"
       large
-
+      v-on:click="openRegisterForm"
     >
       Sign Up
     </v-btn>
+
+    <RegisterForm
+    />
+
   </div>
 
   <div
     v-else
     id="auth-user-bar"
   >
-    <span
+    <div
       id="user-label"
     >
-      {{ this.$store.state.username }}
-    </span>
+      {{ getUser }}
+    </div>
 
     <v-avatar
       color="teal"
@@ -61,10 +64,8 @@
     >
       Log Out
     </v-btn>
+  
   </div>
-
-  <RegisterForm
-  />
 
   </v-app-bar>
 </template>
@@ -81,19 +82,20 @@ export default {
     AuthForm,
   },
 
-  data() {
-    return {
-      dialogProp: false,
-    }
-  },
-
   methods: {
     logOut() {
       return this.$store.dispatch('logoutUser');
     },
 
+    openAuthForm(){
+      this.$store.commit('updateAuthWindow', true);
+    },
+
+    openRegisterForm(){
+      this.$store.commit('updateRegisterWindow', true);
+    },
   },
-  computed: mapGetters(['isAuth']),
+  computed: mapGetters(['isAuth', 'getUser']),
 }
 </script>
 
@@ -103,5 +105,13 @@ export default {
     display: flex;
     justify-content: end;
   }
-
+  #not-authed-user-bar, #auth-user-bar {
+    display: flex;
+  }
+  #head-btn-register {
+    order: -1;
+  }
+  #head-btn-register, #head-btn-auth, #user-label, .v-avatar {
+    margin-right: 45px;
+  }
 </style>

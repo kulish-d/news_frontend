@@ -1,11 +1,11 @@
 <template>
   <v-row justify="center">
     <v-dialog
-      v-model="dialog"
+      v-model="isOpenAuthWindow"
+      @click:outside="closeForm"
       persistent
       width="600"
     >
-    
       <v-card>
         <v-card-title>
           <span class="text-h5">Auth</span>
@@ -19,7 +19,6 @@
                   required
                   v-model="AuthForm.email"
                 >
-                
                 </v-text-field>
               </v-col>
               <v-row>
@@ -32,7 +31,6 @@
                   required
                   v-model="AuthForm.password"
                 >
-                
                 </v-text-field>
               </v-col>
               </v-row>
@@ -44,7 +42,7 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="dialog = false"
+            @click="closeForm"
           >
             Close
           </v-btn>
@@ -71,7 +69,6 @@
   
     data () {
       return {
-        dialog: false,
         AuthForm: {
           email: '',
           password: '',
@@ -87,23 +84,24 @@
       this.$store
       .dispatch('authUser', this.AuthForm)
       .then(() =>
-        this.dialog = false,
+        
         this.AuthForm.email = '',
         this.AuthForm.password = '',
-        console.log('auth?') 
+        this.closeForm()
       )
-      }
+      },
+    
+    closeForm() {
+      this.$store.commit('updateAuthWindow', false)
+    }
+
   },
-  computed: mapGetters(['isAuth']),
+  computed: mapGetters(['isAuth', 'isOpenAuthWindow']),
 
-  props: ['dialogProp'],
-
-  }
+}
   
 </script>
   
 <style scoped>
-  #head-btn-auth {
-    margin: 0 15px 24px 34px;
-  }
+
 </style>

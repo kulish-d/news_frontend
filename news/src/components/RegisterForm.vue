@@ -1,11 +1,11 @@
 <template>
   <v-row justify="center">
     <v-dialog
-      v-model="dialog"
+      v-model="isOpenRegisterWindow"
+      @click:outside="closeForm"
       persistent
       width="1024"
     >
-
       <v-card>
         <v-card-title>
           <span class="text-h5">Registration</span>
@@ -85,7 +85,7 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="dialog = false"
+            @click="closeForm"
           >
             Close
           </v-btn>
@@ -147,23 +147,20 @@ export default {
           this.RegistrationForm.username = '';
           this.RegistrationForm.email = '';
           this.RegistrationForm.password = '';
-          this.RegistrationForm.password2 = ''
+          this.RegistrationForm.password2 = '';
+          this.closeForm();
         })
       }
+    },
+    closeForm() {
+      this.$store.commit('updateRegisterWindow', false)
     }
   },
-  computed: mapGetters(['isAuth']),
-  // mounted() {
-  //     this.printData()
-  // }
-
+  computed: mapGetters(['isAuth', 'isOpenRegisterWindow']),
 }
 </script>
 
 <style scoped>
-  #head-btn {
-    /* margin: 20px; */
-  }
   .v-alert {
     margin: 0 10px 10px 0 ;
   }
