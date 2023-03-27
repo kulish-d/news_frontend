@@ -102,8 +102,7 @@ export default {
   },
 
   async mounted() {
-      await this.$store.dispatch('getUsername')
-      console.log('mounted');
+    await this.$store.dispatch('getUsername');
   },
 
   computed: mapGetters(['isAuth', 'getUser']),

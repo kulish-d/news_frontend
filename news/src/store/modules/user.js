@@ -28,7 +28,6 @@ export default {
         password: authForm.password,
       })
       .then((res) => {if (res.statusText === 'OK') {
-        console.log(res);
         localStorage.setItem('token', res.data.access);
         return res.data.access;
       }})
@@ -40,18 +39,15 @@ export default {
 
     logoutUser(ctx) {
       localStorage.removeItem('token');
-      console.log(ctx, 'logout!');
       ctx.commit('updateUser', null)
       ctx.commit('updateUsername', null)
     },
 
     async getUsername(ctx) {
-      console.log('getUsername')
       if (localStorage.getItem('token')) {
         const id = parseJwt(localStorage.getItem('token')).user_id;
         await axios_request.get(`user/?id=${id}`)
           .then((res) => {if (res.statusText === 'OK') { 
-            console.log(res);
             ctx.commit('updateUsername', res.data.user)
       }
     })

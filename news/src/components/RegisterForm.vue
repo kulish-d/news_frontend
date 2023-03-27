@@ -19,7 +19,6 @@
                   required
                   v-model="RegistrationForm.username"
                 >
-                
                 </v-text-field>
               </v-col>
               <v-col cols="9">
@@ -28,7 +27,6 @@
                   required
                   v-model="RegistrationForm.email"
                 >
-                
                 </v-text-field>
               </v-col>
               <v-col cols="12">
@@ -39,9 +37,7 @@
                   hint="latin 8+ symbols: Upper & lower letters + digits + spec"
                   v-model="RegistrationForm.password"
                 >
-                
                 </v-text-field>
-
                 <v-text-field
                   label="Password (again)"
                   type="password"
@@ -57,24 +53,24 @@
                 color="red"
                 type="warning"
                 v-if="RegistrationForm.password != RegistrationForm.password2"
-                >
+              >
                 Passwords must be equal!
               </v-alert>
 
               <v-alert
-                  border="left"
-                  color="red"
-                  type="warning"
-                  v-if="!passwordValidator(RegistrationForm.password)"
-                  >
-                  Password can't be easy!
-                </v-alert>
+                border="left"
+                color="red"
+                type="warning"
+                v-if="!passwordValidator(RegistrationForm.password)"
+              >
+                Password can't be easy!
+              </v-alert>
               <v-alert
                 border="left"
                 color="red"
                 type="warning"
                 v-if="!emailValidator(RegistrationForm.email)"
-                >
+              >
                 Not valid Email!
               </v-alert>
             </v-row>
@@ -139,29 +135,26 @@ export default {
        && this.passwordValidator(this.RegistrationForm.password) && this.emailValidator(this.RegistrationForm.email)) {
         this.$store
         .dispatch('createUser', this.RegistrationForm)
-        .then(() => console.log('created!') 
-        )
         .then(() => this.$store.dispatch('authUser', this.RegistrationForm))
-        .then((res) => {console.log(res, 'auth!')
           this.dialog = false;
           this.RegistrationForm.username = '';
           this.RegistrationForm.email = '';
           this.RegistrationForm.password = '';
           this.RegistrationForm.password2 = '';
           this.closeForm();
-        })
       }
-    },
-    closeForm() {
-      this.$store.commit('updateRegisterWindow', false)
     }
   },
+    closeForm() {
+      this.$store.commit('updateRegisterWindow', false)
+    },
+
   computed: mapGetters(['isAuth', 'isOpenRegisterWindow']),
 }
 </script>
 
 <style scoped>
   .v-alert {
-    margin: 0 10px 10px 0 ;
+    margin: 0 10px 10px 0;
   }
 </style>
