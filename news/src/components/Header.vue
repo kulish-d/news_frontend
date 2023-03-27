@@ -43,11 +43,16 @@
     v-else
     id="auth-user-bar"
   >
-    <div
+
+    <v-chip
       id="user-label"
+      close-icon="mdi-close-outline"
+      color="green"
+      label
+      link
     >
       {{ getUser }}
-    </div>
+    </v-chip>
 
     <v-avatar
       color="teal"
@@ -95,6 +100,12 @@ export default {
       this.$store.commit('updateRegisterWindow', true);
     },
   },
+
+  async mounted() {
+      await this.$store.dispatch('getUsername')
+      console.log('mounted');
+  },
+
   computed: mapGetters(['isAuth', 'getUser']),
 }
 </script>
@@ -113,5 +124,9 @@ export default {
   }
   #head-btn-register, #head-btn-auth, #user-label, .v-avatar {
     margin-right: 45px;
+  }
+
+  #user-label {
+    place-self: center;
   }
 </style>

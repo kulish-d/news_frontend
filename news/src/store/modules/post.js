@@ -1,4 +1,4 @@
-import axios_request from '../../../api/post'
+import {axios_request} from '../../../api/post'
 export default {
   actions: {
     async fetchPosts(ctx) {

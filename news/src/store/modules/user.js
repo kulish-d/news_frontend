@@ -1,9 +1,9 @@
-import axios_request from '../../../api/post'
+import { axios_request, parseJwt } from '../../../api/post'
 export default {
   state: {
-    userID: null,
+    userToken: null || localStorage.getItem('token'),
+    userID: localStorage.getItem('token') ? parseJwt(localStorage.getItem('token')).user_id : null,
     username: null,
-    userToken: localStorage.getItem('token'),
     authWindowIsOpen: false,
     registerWindowIsOpen: false,
   },
@@ -22,7 +22,7 @@ export default {
     },
 
     async authUser(ctx, authForm) {
-      axios_request
+      await axios_request
       .post('/token/login/', {
         email: authForm.email,
         password: authForm.password,
@@ -32,21 +32,40 @@ export default {
         localStorage.setItem('token', res.data.access);
         return res.data.access;
       }})
-      .then((token) => ctx.commit('updateUser', token))
+      .then((token) => {
+        ctx.commit('updateUser', token);
+        this.dispatch('getUsername')
+      })
     },
 
     logoutUser(ctx) {
       localStorage.removeItem('token');
       console.log(ctx, 'logout!');
       ctx.commit('updateUser', null)
+      ctx.commit('updateUsername', null)
     },
 
-
+    async getUsername(ctx) {
+      console.log('getUsername')
+      if (localStorage.getItem('token')) {
+        const id = parseJwt(localStorage.getItem('token')).user_id;
+        await axios_request.get(`user/?id=${id}`)
+          .then((res) => {if (res.statusText === 'OK') { 
+            console.log(res);
+            ctx.commit('updateUsername', res.data.user)
+      }
+    })
+      }
+    }
   },
   
   mutations: {
     updateUser(state, token) {
       state.userToken = token;
+    },
+
+    updateUsername(state, user) {
+      state.username = user;
     },
 
     updateAuthWindow(state, status) {
