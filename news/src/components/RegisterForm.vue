@@ -127,7 +127,6 @@ export default {
       return /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/g.test(str);
     },
     emailValidator(str) {
-      // eslint-disable-next-line no-useless-escape
       return /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(str);
     },
     createUser() {
