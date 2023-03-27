@@ -1,8 +1,8 @@
-import { axios_request, parseJwt } from '../../../api/post'
+import { axios_request} from '../../../api/post'
 export default {
   state: {
     userToken: null || localStorage.getItem('token'),
-    userID: localStorage.getItem('token') ? parseJwt(localStorage.getItem('token')).user_id : null,
+    userID: null,
     username: null,
     authWindowIsOpen: false,
     registerWindowIsOpen: false,
@@ -17,11 +17,11 @@ export default {
             password: regForm.password
         })
         .then((response) => {if (response.statusText === 'OK') {
-          ctx.commit('updateUser', response.data.id, response.data.username)
+          ctx.commit('updateUser', localStorage.getItem('token'), response.data.id, response.data.username)
         }})
     },
 
-    async authUser(ctx, authForm) {
+    async authUser(authForm) {
       await axios_request
       .post('/token/login/', {
         email: authForm.email,
@@ -32,36 +32,36 @@ export default {
         return res.data.access;
       }})
       .then((token) => {
-        ctx.commit('updateUser', token);
-        this.dispatch('getUsername')
+        this.dispatch('getUser', token)
       })
     },
 
     logoutUser(ctx) {
       localStorage.removeItem('token');
       ctx.commit('updateUser', null)
-      ctx.commit('updateUsername', null)
     },
 
-    async getUsername(ctx) {
-      if (localStorage.getItem('token')) {
-        const id = parseJwt(localStorage.getItem('token')).user_id;
-        await axios_request.get(`user/?id=${id}`)
-          .then((res) => {if (res.statusText === 'OK') { 
-            ctx.commit('updateUsername', res.data.user)
-      }
-    })
+    async getUser(ctx, token=localStorage.getItem('token')) {
+      if (token) {
+      await axios_request.get('/me/', {
+        headers: {
+          Authorization: 'Token ' + token,
+        }
+      })
+        .then((res) => {if (res.statusText === 'OK') { 
+          ctx.commit('updateUser', token, res.data.user_id, res.data.username)
+        }
+        })
       }
     }
+
   },
   
   mutations: {
-    updateUser(state, token) {
+    updateUser(state, token, id, username) {
       state.userToken = token;
-    },
-
-    updateUsername(state, user) {
-      state.username = user;
+      state.userID = id;
+      state.username = username;
     },
 
     updateAuthWindow(state, status) {
@@ -78,7 +78,7 @@ export default {
       return !!state.userToken
     },
 
-    getUser(state) {
+    getUsername(state) {
       return state.username
     },
 

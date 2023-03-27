@@ -51,7 +51,7 @@
       label
       link
     >
-      {{ getUser }}
+      {{ getUsername }}
     </v-chip>
 
     <v-avatar
@@ -102,10 +102,10 @@ export default {
   },
 
   async mounted() {
-    await this.$store.dispatch('getUsername');
+    await this.$store.dispatch('getUser');
   },
 
-  computed: mapGetters(['isAuth', 'getUser']),
+  computed: mapGetters(['isAuth', 'getUsername']),
 }
 </script>
 

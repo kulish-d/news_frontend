@@ -83,12 +83,11 @@
     authUser() {
       this.$store
       .dispatch('authUser', this.AuthForm)
-      .then(() =>
-        
+      .then(() => {
         this.AuthForm.email = '',
         this.AuthForm.password = '',
         this.closeForm()
-      )
+    })
       },
     
     closeForm() {
