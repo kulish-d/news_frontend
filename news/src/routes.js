@@ -6,7 +6,7 @@ const routes = [
         component: MainPage
     },
     {
-        path: '/my-page',
+        path: '/users',
         component: () => import('@/pages/UserPage')
     },
 ]
