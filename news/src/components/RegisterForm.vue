@@ -88,7 +88,7 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="createUser()"
+            @click="createUser"
           >
             Save
           </v-btn>
@@ -132,21 +132,24 @@ export default {
     createUser() {
       if (this.RegistrationForm.password === this.RegistrationForm.password2
        && this.passwordValidator(this.RegistrationForm.password) && this.emailValidator(this.RegistrationForm.email)) {
-        this.$store
-        .dispatch('createUser', this.RegistrationForm)
-        .then(() => this.$store.dispatch('authUser', this.RegistrationForm))
-          this.dialog = false;
-          this.RegistrationForm.username = '';
-          this.RegistrationForm.email = '';
-          this.RegistrationForm.password = '';
-          this.RegistrationForm.password2 = '';
-          this.closeForm();
-      }
+        this.$store.dispatch('createUser', this.RegistrationForm)
+        .then(() => { 
+          this.$store.dispatch('authUser', this.RegistrationForm)})
+        .then(() => {
+          this.dialog = false,
+          // this.RegistrationForm.username = '',
+          // this.RegistrationForm.email = '',
+          // this.RegistrationForm.password = '',
+          // this.RegistrationForm.password2 = '',
+          this.closeForm()
+        })
     }
-  },
+    },
+
     closeForm() {
       this.$store.commit('updateRegisterWindow', false)
     },
+},
 
   computed: mapGetters(['isAuth', 'isOpenRegisterWindow']),
 }

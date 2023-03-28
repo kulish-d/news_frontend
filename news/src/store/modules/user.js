@@ -17,11 +17,11 @@ export default {
             password: regForm.password
         })
         .then((response) => {if (response.statusText === 'OK') {
-          ctx.commit('updateUser', localStorage.getItem('token'), response.data.id, response.data.username)
+          console.log('created')
         }})
     },
 
-    async authUser(authForm) {
+    async authUser(ctx, authForm) {
       await axios_request
       .post('/token/login/', {
         email: authForm.email,
@@ -29,19 +29,25 @@ export default {
       })
       .then((res) => {if (res.statusText === 'OK') {
         localStorage.setItem('token', res.data.access);
-        return res.data.access;
+        // return res.data.access;
       }})
-      .then((token) => {
-        this.dispatch('getUser', token)
+      .then(() => {
+        this.dispatch('getUser')
       })
     },
 
     logoutUser(ctx) {
       localStorage.removeItem('token');
-      ctx.commit('updateUser', null)
+      const null_data  = {
+        token: null,
+        id: null,
+        username: null
+      }
+      ctx.commit('updateUser', null_data)
     },
 
-    async getUser(ctx, token=localStorage.getItem('token')) {
+    async getUser(ctx) {
+      const token = localStorage.getItem('token')
       if (token) {
       await axios_request.get('/me/', {
         headers: {
@@ -49,7 +55,12 @@ export default {
         }
       })
         .then((res) => {if (res.statusText === 'OK') { 
-          ctx.commit('updateUser', token, res.data.user_id, res.data.username)
+          const server_data  = {
+            token: token,
+            id: res.data.user_id,
+            username: res.data.username
+          }
+          ctx.commit('updateUser', server_data)
         }
         })
       }
@@ -58,10 +69,10 @@ export default {
   },
   
   mutations: {
-    updateUser(state, token, id, username) {
-      state.userToken = token;
-      state.userID = id;
-      state.username = username;
+    updateUser(state, some_data) {
+      state.userToken = some_data.token;
+      state.userID = some_data.id;
+      state.username = some_data.username;
     },
 
     updateAuthWindow(state, status) {

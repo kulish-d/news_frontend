@@ -126,6 +126,8 @@ export default {
   }
 
   #user-label {
+    margin-right: 15px;
+    min-width: 70px;
     place-self: center;
   }
 </style>
