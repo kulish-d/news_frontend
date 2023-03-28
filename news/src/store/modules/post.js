@@ -1,10 +1,10 @@
-import axios_request from '../../../api/post'
+import {axios_request} from '../../../api/post'
 export default {
   actions: {
     async fetchPosts(ctx) {
       await axios_request
       .get('/posts/')
-      .then(response => {(this.posts = response.data); console.log(this.posts)});
+      .then((response) => {(this.posts = response.data)});
       ctx.commit('updatePosts', this.posts)
     },
   },
