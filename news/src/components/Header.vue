@@ -55,8 +55,9 @@
     </v-chip>
 
     <v-avatar
+      id="avatar"
       color="teal"
-      size="48"
+      size="38"
     >
     </v-avatar>
 
@@ -126,8 +127,11 @@ export default {
   }
 
   #user-label {
-    margin-right: 15px;
-    min-width: 70px;
+    margin-right: 10px;
+    min-width: 60px;
+    place-self: center;
+  }
+  #avatar {
     place-self: center;
   }
 </style>
