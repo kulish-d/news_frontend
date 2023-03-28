@@ -1,22 +1,23 @@
 <template>
   <div id="main-page">
-  <Header/>
-  <Posts/>
+    <Header/>
+    <Posts/>
   </div>
 </template>
   
 <script>
 import Posts from '../components/Posts.vue'
 import Header from '../components/Header.vue'
-  export default {
-    name: 'MainPage',
-    components: {
-      Header,
-      Posts,
-    }
+export default {
+  name: 'MainPage',
+  components: {
+    Header,
+    Posts,
   }
+}
 </script>
-  
+
+
 <style>
 
 </style>
