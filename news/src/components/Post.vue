@@ -1,6 +1,6 @@
 <template>
   <v-col>
-    <v-card elevation="10" outlined shaped>
+    <v-card elevation="10" outlined shaped width="350">
       <v-card-title>{{ post.title }}</v-card-title>
       <v-card-subtitle>{{post.author}}</v-card-subtitle>
       <v-card-text>{{ post.text }}</v-card-text>
