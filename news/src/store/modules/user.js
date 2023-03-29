@@ -93,6 +93,10 @@ export default {
       return state.username
     },
 
+    getUserId(state) {
+      return state.userID
+    },
+
     isOpenAuthWindow(state) {
       return state.authWindowIsOpen
     },

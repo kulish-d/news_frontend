@@ -6,8 +6,10 @@ const routes = [
         component: MainPage
     },
     {
-        path: '/users',
-        component: () => import('@/pages/UserPage')
+        path: '/users/:id',
+        component: () => import('@/pages/UserPage'),
+        name: 'users',
+        props: true
     },
 ]
 

@@ -55,7 +55,7 @@
       close-icon="mdi-close-outline"
       color="green"
     >
-      <router-link to="/users">{{ getUsername }}</router-link>
+      <router-link :to="{name: 'users', params: {id: this.$store.getters.getUserId}}">{{ getUsername }}</router-link>
     </v-chip>
 
     <v-avatar
