@@ -31,6 +31,14 @@
           </v-btn>
         </v-list-item>
     </v-card>
+    <v-progress-circular
+      v-show="!this.posts"
+      :size="100"
+      :width="7"
+      color="purple"
+      indeterminate
+    >
+    </v-progress-circular>
     <Post
       v-for="post in posts"
       v-bind:key="post.id"
