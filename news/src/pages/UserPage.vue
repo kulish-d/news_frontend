@@ -8,6 +8,7 @@
           <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
         </v-avatar>
         <v-btn
+          v-show="username===this.$store.getters.getUsername"
           class="ma-2"
           outlined
           color="indigo"
@@ -21,25 +22,33 @@
             <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-btn
-              class="ma-2"
-              outlined
-              color="indigo"
-            >
-              Add Post
+            v-show="username===this.$store.getters.getUsername"
+            class="ma-2"
+            outlined
+            color="indigo"
+          >
+            Add Post
           </v-btn>
         </v-list-item>
     </v-card>
+    <Post
+      v-for="post in posts"
+      v-bind:key="post.id"
+      :post="post"
+    />
   </div>
 </template>
 
 
 <script>
 import Header from '../components/Header.vue';
+import Post from '@/components/Post.vue';
 import { axios_request } from '../../api/post';
 export default {
   name: 'UserPage',
   components: {
     Header,
+    Post,
   },
   data() {
     return {
@@ -58,11 +67,18 @@ export default {
   },
   
   async mounted() {
-    if (this.$store.getters.getUserId === this.id) this.username = this.$store.getters.getUsername
-    else {
-      await axios_request('/users/?id=' + this.id ).then((res) => {this.username = res.user_name, this.email = res.user_email})
-    }
+      await axios_request('/users/?id=' + this.id).then((res) => {if (res.statusText === 'OK') {
+        this.username = res.data.username,
+        this.email = res.data.email
+      }
+    }).
+    then(() => {
+      axios_request('/users/' + this.id + '/posts/').then((res) => {if (res.statusText === 'OK') {
+         this.posts = res.data
+    }})
+    })
   },
+
   props: ['id']
 }
 </script>
