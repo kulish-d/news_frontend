@@ -30,6 +30,14 @@
             Add Post
           </v-btn>
         </v-list-item>
+        <v-alert
+          v-show="!this.posts.length"
+          outlined
+          type="success"
+          text
+        >
+          there are no posts yet :)
+        </v-alert>
     </v-card>
     <v-progress-circular
       v-show="!this.posts"
@@ -39,6 +47,7 @@
       indeterminate
     >
     </v-progress-circular>
+
     <Post
       v-for="post in posts"
       v-bind:key="post.id"
@@ -62,19 +71,11 @@ export default {
     return {
       username: '',
       email: '',
-      posts: '',
+      posts: [],
     }
   },
   methods: {
     async getUserData() {
-      
-    },
-    getUsername() {
-      return this.username
-    }
-  },
-  
-  async mounted() {
       await axios_request('/users/?id=' + this.id).then((res) => {if (res.statusText === 'OK') {
         this.username = res.data.username,
         this.email = res.data.email
@@ -85,6 +86,23 @@ export default {
          this.posts = res.data
     }})
     })
+    },
+    getUsername() {
+      return this.username
+    }
+  },
+  
+  async mounted() {
+    await this.getUserData();
+  },
+
+  watch: {
+    '$route.params.id': {
+      immediate: true,
+      handler() {
+        this.getUserData()
+      },
+    },
   },
 
   props: ['id']

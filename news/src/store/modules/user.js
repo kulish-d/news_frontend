@@ -16,9 +16,6 @@ export default {
             email: regForm.email,
             password: regForm.password
         })
-        .then((response) => {if (response.statusText === 'OK') {
-          console.log('created')
-        }})
     },
 
     async authUser(ctx, authForm) {
@@ -29,7 +26,6 @@ export default {
       })
       .then((res) => {if (res.statusText === 'OK') {
         localStorage.setItem('token', res.data.access);
-        // return res.data.access;
       }})
       .then(() => {
         this.dispatch('getUser')
