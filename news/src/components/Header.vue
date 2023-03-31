@@ -6,6 +6,12 @@
     dark
   >
 
+  <v-tabs id="tabs">
+    <v-tab v-show="$route.path!='/'">
+      <router-link to="/">Main Page</router-link>
+    </v-tab>
+  </v-tabs>
+
   <div
     id="not-authed-user-bar"
     v-if="!isAuth"
@@ -48,10 +54,8 @@
       id="user-label"
       close-icon="mdi-close-outline"
       color="green"
-      label
-      link
     >
-      {{ getUsername }}
+      <router-link :to="{name: 'users', params: {id: this.$store.getters.getUserId}}">{{ getUsername }}</router-link>
     </v-chip>
 
     <v-avatar
@@ -113,25 +117,43 @@ export default {
 
 <style scoped>
   #head {
+    min-width: 400px;
+  }
+  #head *{
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
   }
-  #not-authed-user-bar, #auth-user-bar {
-    display: flex;
-  }
-  #head-btn-register {
-    order: -1;
-  }
-  #head-btn-register, #head-btn-auth, #user-label, .v-avatar {
+
+  #not-authed-user-bar {
     margin-right: 45px;
   }
 
-  #user-label {
-    margin-right: 10px;
-    min-width: 60px;
-    place-self: center;
+  #auth-user-bar {
+    margin-right: 15px;
   }
-  #avatar {
+
+  #head-btn-register {
+    order: -1;
+    margin-right: 10px;
+  }
+
+  #head-btn-logout {
+    margin-right: -20px;
+  }
+  #user-label, .v-avatar {
     place-self: center;
+    margin-right: 8px;
+  }
+
+  .v-application a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .v-toolbar__content, .v-toolbar__extension {
+
+}
+  .v-chip {
+    cursor: pointer;
   }
 </style>
