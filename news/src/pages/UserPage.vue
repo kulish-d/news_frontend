@@ -2,34 +2,39 @@
   <div id="user-page">
     <Header/>
     <div id="card-and-modal">
-      <v-card max-width="434" tile>
+      <v-card max-width="300" tile>
         <v-col>
           <v-avatar size="100">
             <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
           </v-avatar>
-          <v-btn
-            v-show="username===this.$store.getters.getUsername"
-            class="ma-2"
-            outlined
-            color="indigo"
-          >
-            Edit profile
-          </v-btn>
+
         </v-col>
           <v-list-item color="rgba(0, 0, 0, .4)">
             <v-list-item-content>
               <v-list-item-title class="title">{{ username }}</v-list-item-title>
               <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
             </v-list-item-content>
-            <v-btn
-              v-show="id===this.$store.getters.getUserId"
-              class="ma-2"
-              outlined
-              color="indigo"
-            >
-              Add Post
-            </v-btn>
           </v-list-item>
+
+            <div id="user-btns">
+              <v-btn
+                v-show="username===this.$store.getters.getUsername"
+                class="ma-2"
+                outlined
+                color="indigo"
+              >
+                Edit profile
+              </v-btn>
+              <v-btn
+                v-show="id===this.$store.getters.getUserId"
+                class="ma-2"
+                outlined
+                color="indigo"
+              >
+                Add Post
+              </v-btn>
+            </div>
+
 
         </v-card>
           <v-form
@@ -130,7 +135,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
   #card-and-modal {
     display: flex;
     width: 100%;
@@ -149,7 +154,8 @@ export default {
     align-self: center;
   }
   .v-card {
-
+    display: flex;
+    align-self: center;
   }
   .col {
     display: flex;
