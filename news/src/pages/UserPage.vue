@@ -22,7 +22,7 @@
               <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-btn
-              v-show="username===this.$store.getters.getUsername"
+              v-show="id===this.$store.getters.getUserId"
               class="ma-2"
               outlined
               color="indigo"
@@ -33,32 +33,25 @@
 
         </v-card>
           <v-form
-            ref="form"
             
+            ref="form"
+            v-if="id===this.$store.getters.getUserId"
             lazy-validation
           >
             <v-text-field
               
-              :counter="20"
+              :counter="10"
               :rules="nameRules"
-              label="Title"
+              label="Username"
               required
             ></v-text-field>
 
             <v-text-field
               
               :rules="emailRules"
-              label="Text"
+              label="Email"
               required
             ></v-text-field>
-
-            <v-select
-              
-              :items="items"
-              :rules="[v => !!v || 'Item is required']"
-              label="Item"
-              required
-            ></v-select>
 
           </v-form>
     </div>
@@ -154,6 +147,12 @@ export default {
     #card-and-modal {
       flex-direction: column;
     }
+  }
+  .v-form {
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
   }
   .v-card {
 
