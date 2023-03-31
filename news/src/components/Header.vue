@@ -116,32 +116,33 @@ export default {
 
 
 <style scoped>
+  #head {
+    min-width: 400px;
+  }
   #head *{
     display: flex;
     justify-content: space-between;
   }
 
-  #tabs {
+  #not-authed-user-bar {
+    margin-right: 45px;
   }
 
-  #not-authed-user-bar, #auth-user-bar {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  #auth-user-bar > * {
-    margin-right: 10px;
+  #auth-user-bar {
+    margin-right: 15px;
   }
 
   #head-btn-register {
     order: -1;
+    margin-right: 10px;
   }
 
   #head-btn-logout {
-    margin-right: 0;
+    margin-right: -20px;
   }
   #user-label, .v-avatar {
     place-self: center;
+    margin-right: 8px;
   }
 
   .v-application a {
