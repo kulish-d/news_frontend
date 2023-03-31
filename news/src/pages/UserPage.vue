@@ -33,22 +33,15 @@
 
         </v-card>
           <v-form
-            
-            ref="form"
             v-if="id===this.$store.getters.getUserId"
             lazy-validation
           >
             <v-text-field
-              
-              :counter="10"
-              :rules="nameRules"
               label="Username"
               required
             ></v-text-field>
 
             <v-text-field
-              
-              :rules="emailRules"
               label="Email"
               required
             ></v-text-field>
@@ -79,6 +72,7 @@
       v-bind:key="post.id"
       :post="post"
     />
+
   </div>
 </template>
 
