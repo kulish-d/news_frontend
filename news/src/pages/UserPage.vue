@@ -2,7 +2,8 @@
   <div id="user-page">
     <Header/>
     <div id="card-and-modal">
-      <v-card max-width="300" tile>
+
+      <v-card tile>
         <v-col>
           <v-avatar size="100">
             <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
@@ -16,43 +17,44 @@
             </v-list-item-content>
           </v-list-item>
 
-            <div id="user-btns">
-              <v-btn
-                v-show="username===this.$store.getters.getUsername"
-                class="ma-2"
-                outlined
-                color="indigo"
-              >
-                Edit profile
-              </v-btn>
-              <v-btn
-                v-show="id===this.$store.getters.getUserId"
-                class="ma-2"
-                outlined
-                color="indigo"
-              >
-                Add Post
-              </v-btn>
-            </div>
+            <v-col id="user-btns"
+              v-show="id===this.$store.getters.getUserId"
+            >
+                <v-btn
+                  class="ma-2"
+                  outlined
+                  color="indigo"
+                >
+                  Edit profile
+                </v-btn>
 
+                <v-btn
+                  class="ma-2"
+                  outlined
+                  color="indigo"
+                >
+                  Add Post
+                </v-btn>
+            </v-col>
 
         </v-card>
+
           <v-form
             v-if="id===this.$store.getters.getUserId"
             lazy-validation
           >
             <v-text-field
+              v-model="username"
               label="Username"
-              required
             ></v-text-field>
 
             <v-text-field
+              v-model="email"
               label="Email"
               required
             ></v-text-field>
-
           </v-form>
-    </div>
+      </div>
 
     <v-alert
       v-show="!this.posts.length"
@@ -102,7 +104,7 @@ export default {
   methods: {
     async getUserData() {
       await axios_request('/users/?id=' + this.id).then((res) => {if (res.statusText === 'OK') {
-        this.username = res.data.username,
+        this.username = res.data.username
         this.email = res.data.email
       }
     }).
@@ -141,12 +143,20 @@ export default {
     width: 100%;
     justify-content: space-evenly;
   }
-
-  @media (width < 500px) {
+  @media (width < 801px) {
+    #card-and-modal {
+      justify-content: space-between;
+    }
+  }
+  @media (width < 601px) {
     #card-and-modal {
       flex-direction: column;
     }
   }
+  #user-btns {
+    flex-direction: column;
+  }
+
   .v-form {
     max-width: 400px;
     display: flex;
