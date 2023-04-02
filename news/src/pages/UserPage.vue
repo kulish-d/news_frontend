@@ -3,7 +3,7 @@
     <Header/>
     <div id="card-and-modal">
 
-      <v-card tile>
+      <v-card id="user-card" tile max-width="500">
         <v-col>
           <v-avatar size="100">
             <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
@@ -29,6 +29,7 @@
                 </v-btn>
 
                 <v-btn
+                  v-on:click="openPostAddForm"
                   class="ma-2"
                   outlined
                   color="indigo"
@@ -39,22 +40,73 @@
 
         </v-card>
 
-          <v-form
-            v-if="id===this.$store.getters.getUserId"
-            lazy-validation
-          >
-            <v-text-field
-              v-model="username"
-              label="Username"
-            ></v-text-field>
+        <v-form id="edit-profile-form"
+          v-if="id===this.$store.getters.getUserId"
+          lazy-validation
+        >
+          <v-text-field
+            v-model="username"
+            label="Username"
+          ></v-text-field>
 
-            <v-text-field
-              v-model="email"
-              label="Email"
-              required
-            ></v-text-field>
-          </v-form>
+          <v-text-field
+            v-model="email"
+            label="Email"
+            required
+          ></v-text-field>
+        </v-form>
       </div>
+
+    <v-dialog
+      v-model="isOpenPostWindow"
+      @click:outside="closeForm"
+      persistent
+    >
+      <v-card id="add-post-form-card">
+        <v-card-title>
+          <span>NEW POST</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-text-field
+                label="Title"
+                counter="20"
+                required
+                v-model="PostForm.title"
+              >
+              </v-text-field>
+            </v-row>
+            <v-row>
+              <v-text-field
+                label="Text"
+                counter="200"
+                required
+                v-model="PostForm.text"
+              >
+              </v-text-field>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue-darken-1"
+            variant="text"
+            @click="closeForm"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            color="blue-darken-1"
+            variant="text"
+            @click="addPost"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-alert
       v-show="!this.posts.length"
@@ -88,6 +140,7 @@
 import Header from '../components/Header.vue';
 import Post from '@/components/Post.vue';
 import { axios_request } from '../../api/post';
+import {mapGetters} from "vuex";
 export default {
   name: 'UserPage',
   components: {
@@ -99,6 +152,11 @@ export default {
       username: '',
       email: '',
       posts: [],
+      PostForm: {
+        title: '',
+        text: '',
+        tags: [],
+      }
     }
   },
   methods: {
@@ -114,6 +172,35 @@ export default {
     }})
     })
     },
+
+    async addPost() {
+      await axios_request.post('/posts/', {
+        title: this.PostForm.title,
+        text: this.PostForm.text,
+        tags: this.PostForm.tags
+      }, {
+        headers: {
+          Authorization: 'Token ' + localStorage.getItem('token'),
+        }
+      })
+      .then((res) => {
+        if (res.status === 201) {
+          this.closeForm()
+          this.getUserData()
+        }
+      })
+    },
+
+    openPostAddForm(){
+      this.$store.commit('updatePostWindow', true);
+    },
+
+    closeForm() {
+      this.$store.commit('updatePostWindow', false)
+    },
+
+
+
     getUsername() {
       return this.username
     }
@@ -132,17 +219,23 @@ export default {
     },
   },
 
+  computed: mapGetters(['isOpenPostWindow']),
+
   props: ['id']
 }
 </script>
 
 
 <style scoped>
+  #user-page {
+  }
+
   #card-and-modal {
     display: flex;
     width: 100%;
     justify-content: space-evenly;
   }
+
   @media (width < 801px) {
     #card-and-modal {
       justify-content: space-between;
@@ -150,25 +243,34 @@ export default {
   }
   @media (width < 601px) {
     #card-and-modal {
+      width: 90%;
       flex-direction: column;
     }
+
+    #user-card {
+
+    }
+    #edit-profile-form {
+      width: 90%;
+    }
   }
+
+  #user-card {
+    display: flex;
+    align-self: center;
+  }
+
   #user-btns {
     flex-direction: column;
   }
 
-  .v-form {
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    align-self: center;
+  #edit-profile-form {
+    place-self: center;
   }
-  .v-card {
-    display: flex;
-    align-self: center;
+
+  #add-post-form-card {
+    overflow: hidden;
   }
-  .col {
-    display: flex;
-    justify-content: space-between;
-  }
+
+
 </style>

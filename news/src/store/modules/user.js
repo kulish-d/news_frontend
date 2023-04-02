@@ -1,7 +1,7 @@
 import { axios_request} from '../../../api/post'
 export default {
   state: {
-    userToken: null || localStorage.getItem('token'),
+    userToken: localStorage.getItem('token'),
     userID: null,
     username: null,
     authWindowIsOpen: false,
