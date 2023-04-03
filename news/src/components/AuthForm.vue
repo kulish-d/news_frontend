@@ -62,20 +62,21 @@
   
 <script>
   import {mapGetters} from 'vuex';
-  export default {
-    name: 'AuthForm',
-    components: {
-    },
-  
-    data () {
-      return {
-        AuthForm: {
-          email: '',
-          password: '',
-        }
+
+export default {
+  name: 'AuthForm',
+  components: {
+  },
+
+  data () {
+    return {
+      AuthForm: {
+        email: '',
+        password: '',
       }
-    },
-  
+    }
+  },
+
   methods: {
     printData() {
       console.log(this.AuthForm)

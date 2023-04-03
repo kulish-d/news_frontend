@@ -82,9 +82,11 @@
 
 
 <script>
+import {mapGetters} from 'vuex';
+
 import RegisterForm from './RegisterForm.vue';
 import AuthForm from './AuthForm.vue';
-import {mapGetters} from 'vuex';
+
 export default {
   name: 'Header',
   components: {

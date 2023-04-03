@@ -101,6 +101,7 @@
 
 <script>
 import {mapGetters} from 'vuex';
+
 export default {
   name: 'RegisterForm',
   components: {
@@ -137,10 +138,10 @@ export default {
           this.$store.dispatch('authUser', this.RegistrationForm)})
         .then(() => {
           this.dialog = false
-          // this.RegistrationForm.username = '',
-          // this.RegistrationForm.email = '',
-          // this.RegistrationForm.password = '',
-          // this.RegistrationForm.password2 = '',
+          this.RegistrationForm.username = '',
+          this.RegistrationForm.email = '',
+          this.RegistrationForm.password = '',
+          this.RegistrationForm.password2 = '',
           this.closeForm()
         })
     }

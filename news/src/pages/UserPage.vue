@@ -126,7 +126,22 @@
           </v-container>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer>
+
+            <v-alert
+              v-show="addPostError"
+              text
+              type="error"
+              outlined
+              title="Ooops 0_o"
+            >
+              <div v-if="addPostErrorText.title">title: {{ addPostErrorText.title[0] }}</div>
+              <div v-if="addPostErrorText.text">text: {{ addPostErrorText.text[0] }}</div>
+              <div v-if="addPostErrorText.tags">tags: {{ addPostErrorText.tags[0] }}</div>
+            </v-alert>
+
+          </v-spacer>
+
           <v-btn
             color="blue-darken-1"
             variant="text"
@@ -141,7 +156,11 @@
           >
             Save
           </v-btn>
+
         </v-card-actions>
+        
+
+
       </v-card>
     </v-dialog>
 
@@ -163,6 +182,8 @@
     >
     </v-progress-circular>
 
+
+
     <Post
       v-for="post in posts"
       v-bind:key="post.id"
@@ -174,10 +195,12 @@
 
 
 <script>
+import { axios_request } from '../../api/post';
+import { mapGetters } from "vuex";
+
 import Header from '../components/Header.vue';
 import Post from '@/components/Post.vue';
-import { axios_request } from '../../api/post';
-import {mapGetters} from "vuex";
+
 
 export default {
   name: 'UserPage',
@@ -194,7 +217,9 @@ export default {
         title: '',
         text: '',
         tags: [],
-      }
+      },
+      addPostError: false,
+      addPostErrorText: ''
     }
   },
   methods: {
@@ -225,12 +250,17 @@ export default {
       .then((res) => {
         if (res.status === 201) {
           this.closeForm()
+          this.PostForm.title = '',
+          this.PostForm.text = '',
+          this.PostForm.tags = '',
           this.getUserData()
         }
-        else if (res.status === 400) {
-          console.log('oops!')
         }
-      })
+      )
+      .catch((res) => {
+        this.addPostError = true;
+        this.addPostErrorText = res.response.data
+    })
     },
 
     showUserActions() {
