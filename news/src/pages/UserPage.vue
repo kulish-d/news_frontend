@@ -1,8 +1,10 @@
 <template>
-  <div id="user-page">
+  <div id="user-page"
+  >
     <Header/>
-    <div id="card-and-modal">
-
+    <div id="card-and-modal"
+      v-if="this.id"
+      >
       <v-card id="user-card" tile max-width="500">
         <v-col>
           <v-avatar size="100">
@@ -18,7 +20,7 @@
           </v-list-item>
 
             <v-col id="user-btns"
-              v-show="id===this.$store.getters.getUserId"
+              v-if="showUserActions"
             >
                 <v-btn
                   class="ma-2"
@@ -41,7 +43,7 @@
         </v-card>
 
         <v-form id="edit-profile-form"
-          v-if="id===this.$store.getters.getUserId"
+          v-if="showUserActions"
           lazy-validation
         >
           <v-text-field
@@ -56,7 +58,15 @@
           ></v-text-field>
         </v-form>
       </div>
-
+    <div v-else> 
+      <v-progress-circular
+      :size="100"
+      :width="7"
+      color="purple"
+      indeterminate
+      >
+      </v-progress-circular>
+    </div>
     <v-dialog
       v-model="isOpenPostWindow"
       @click:outside="closeForm"
@@ -85,6 +95,33 @@
                 v-model="PostForm.text"
               >
               </v-text-field>
+            </v-row>
+            <v-row>
+
+              <v-combobox
+                v-model="PostForm.tags"
+                chips
+                clearable
+                label="Tags"
+                multiple
+                hint="Maximum tag size: 15 symbols, for add press Enter"
+                >
+                <template v-slot:selection="{ attrs, item, select, selected }">
+                  <v-chip
+                    v-bind="attrs"
+                    :input-value="selected"
+                    close
+                    @click="select"
+                    @click:close="removeChip(item)"
+                  >
+                    <strong>{{ item }}</strong>&nbsp;
+                  </v-chip>
+                </template>
+              </v-combobox>
+
+            </v-row>
+            <v-row>
+                <v-file-input chips multiple label="Choose the image"></v-file-input>
             </v-row>
           </v-container>
         </v-card-text>
@@ -141,6 +178,7 @@ import Header from '../components/Header.vue';
 import Post from '@/components/Post.vue';
 import { axios_request } from '../../api/post';
 import {mapGetters} from "vuex";
+
 export default {
   name: 'UserPage',
   components: {
@@ -177,8 +215,9 @@ export default {
       await axios_request.post('/posts/', {
         title: this.PostForm.title,
         text: this.PostForm.text,
-        tags: this.PostForm.tags
-      }, {
+        tags: this.PostForm.tags.map((tag) => {return {'text': tag}})
+      },
+       {
         headers: {
           Authorization: 'Token ' + localStorage.getItem('token'),
         }
@@ -188,7 +227,14 @@ export default {
           this.closeForm()
           this.getUserData()
         }
+        else if (res.status === 400) {
+          console.log('oops!')
+        }
       })
+    },
+
+    showUserActions() {
+      return this.id === this.$store.getters.getUserId;
     },
 
     openPostAddForm(){
@@ -196,13 +242,15 @@ export default {
     },
 
     closeForm() {
-      this.$store.commit('updatePostWindow', false)
+      this.$store.commit('updatePostWindow', false);
     },
 
-
+    removeChip (item) {
+      this.PostForm.tags.splice(this.PostForm.tags.indexOf(item), 1);
+    },
 
     getUsername() {
-      return this.username
+      return this.username;
     }
   },
   
@@ -251,7 +299,7 @@ export default {
 
     }
     #edit-profile-form {
-      width: 90%;
+      
     }
   }
 
@@ -265,7 +313,10 @@ export default {
   }
 
   #edit-profile-form {
-    place-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   #add-post-form-card {
