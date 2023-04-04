@@ -17,6 +17,7 @@
     
 <script>
 import PostTag from '../components/PostTag.vue'
+
 export default {
   name: 'Post',
   components: {

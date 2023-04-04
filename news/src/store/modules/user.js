@@ -1,11 +1,12 @@
 import { axios_request} from '../../../api/post'
 export default {
   state: {
-    userToken: null || localStorage.getItem('token'),
+    userToken: localStorage.getItem('token'),
     userID: null,
     username: null,
     authWindowIsOpen: false,
     registerWindowIsOpen: false,
+    postWindowIsOpen: false,
   },
   
   actions: {
@@ -77,6 +78,10 @@ export default {
 
     updateRegisterWindow(state, status) {
       state.registerWindowIsOpen = status;
+    },
+
+    updatePostWindow(state, status) {
+      state.postWindowIsOpen = status;
     }
   },
 
@@ -99,6 +104,10 @@ export default {
 
     isOpenRegisterWindow(state) {
       return state.registerWindowIsOpen
+    },
+
+    isOpenPostWindow(state) {
+      return state.postWindowIsOpen
     }
   }
 }
