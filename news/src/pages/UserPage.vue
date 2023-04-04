@@ -121,7 +121,11 @@
 
             </v-row>
             <v-row>
-                <v-file-input chips multiple label="Choose the image"></v-file-input>
+                <v-file-input chips multiple label="Choose the image"
+                  v-model="PostForm.image"
+                  accept="image/*"
+                >
+                </v-file-input>
             </v-row>
           </v-container>
         </v-card-text>
@@ -138,6 +142,7 @@
               <div v-if="addPostErrorText.title">title: {{ addPostErrorText.title[0] }}</div>
               <div v-if="addPostErrorText.text">text: {{ addPostErrorText.text[0] }}</div>
               <div v-if="addPostErrorText.tags">tags: {{ addPostErrorText.tags[0] }}</div>
+              <div v-if="addPostErrorText.image">image: {{ addPostErrorText.image[0] }}</div>
             </v-alert>
 
           </v-spacer>
@@ -217,9 +222,10 @@ export default {
         title: '',
         text: '',
         tags: [],
+        image: null,
       },
       addPostError: false,
-      addPostErrorText: ''
+      addPostErrorText: '',
     }
   },
   methods: {
@@ -237,13 +243,21 @@ export default {
     },
 
     async addPost() {
+      // const data = new FormData();
+      // data.append('title', this.PostForm.title)
+      // data.append('text', this.PostForm.text)
+      // data.append('tags', JSON.stringify(this.PostForm.tags.map((tag) => {return {'text': tag}})))
+      // data.append('image', this.PostForm.image[0])
+      // console.log(data.get('tags'))
+
       await axios_request.post('/posts/', {
         title: this.PostForm.title,
         text: this.PostForm.text,
-        tags: this.PostForm.tags.map((tag) => {return {'text': tag}})
-      },
-       {
+        tags: JSON.stringify(this.PostForm.tags.map((tag) => {return {'text': tag}})),
+        image: this.PostForm.image[0]
+      }, {
         headers: {
+          'Content-Type': 'multipart/form-data',
           Authorization: 'Token ' + localStorage.getItem('token'),
         }
       })
@@ -253,12 +267,14 @@ export default {
           this.PostForm.title = '',
           this.PostForm.text = '',
           this.PostForm.tags = '',
+          this.PostForm.image = null,
           this.getUserData()
         }
         }
       )
       .catch((res) => {
-        this.addPostError = true;
+        console.log(res),
+        this.addPostError = true,
         this.addPostErrorText = res.response.data
     })
     },
