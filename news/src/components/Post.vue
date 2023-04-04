@@ -4,6 +4,7 @@
       <v-card-title>{{ post.title }}</v-card-title>
       <v-card-subtitle><router-link :to="{name: 'users', params: {id: post.author.id}}">{{post.author.username}}</router-link></v-card-subtitle>
       <v-card-text>{{ post.text }}</v-card-text>
+      <v-img width="250" src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"></v-img>
       <div v-if="post.tags">
         <PostTag
           :tag="tag.text"
