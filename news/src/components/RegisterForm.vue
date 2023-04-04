@@ -52,7 +52,7 @@
                 border="left"
                 color="red"
                 type="warning"
-                v-if="RegistrationForm.password != RegistrationForm.password2"
+                v-if="RegistrationForm.password !== RegistrationForm.password2"
               >
                 Passwords must be equal!
               </v-alert>
@@ -101,6 +101,7 @@
 
 <script>
 import {mapGetters} from 'vuex';
+
 export default {
   name: 'RegisterForm',
   components: {
@@ -136,11 +137,11 @@ export default {
         .then(() => { 
           this.$store.dispatch('authUser', this.RegistrationForm)})
         .then(() => {
-          this.dialog = false,
-          // this.RegistrationForm.username = '',
-          // this.RegistrationForm.email = '',
-          // this.RegistrationForm.password = '',
-          // this.RegistrationForm.password2 = '',
+          this.dialog = false
+          this.RegistrationForm.username = '',
+          this.RegistrationForm.email = '',
+          this.RegistrationForm.password = '',
+          this.RegistrationForm.password2 = '',
           this.closeForm()
         })
     }
