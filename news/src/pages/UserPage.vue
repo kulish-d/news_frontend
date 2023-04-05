@@ -8,7 +8,7 @@
       <v-card id="user-card" tile max-width="500">
         <v-col>
           <v-avatar size="100">
-            <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
+            <v-img :src="this.avatar"></v-img>
           </v-avatar>
 
         </v-col>
@@ -22,22 +22,22 @@
             <v-col id="user-btns"
               v-if="showUserActions"
             >
-                <v-btn
-                  class="ma-2"
-                  outlined
-                  color="indigo"
-                >
-                  Edit profile
-                </v-btn>
+              <v-btn
+                class="ma-2"
+                outlined
+                color="indigo"
+              >
+                Edit profile
+              </v-btn>
 
-                <v-btn
-                  v-on:click="openPostAddForm"
-                  class="ma-2"
-                  outlined
-                  color="indigo"
-                >
-                  Add Post
-                </v-btn>
+              <v-btn
+                v-on:click="openPostAddForm"
+                class="ma-2"
+                outlined
+                color="indigo"
+              >
+                Add Post
+              </v-btn>
             </v-col>
 
         </v-card>
@@ -208,7 +208,7 @@
 
 
 <script>
-import { axios_request } from '../../api/post';
+import { axios_request, BASE_URL } from '../../api/post';
 import { mapGetters } from "vuex";
 
 import Header from '../components/Header.vue';
@@ -225,6 +225,7 @@ export default {
     return {
       username: '',
       email: '',
+      avatar: null,
       posts: [],
       PostForm: {
         title: '',
@@ -248,8 +249,9 @@ export default {
   methods: {
     async getUserData() {
       await axios_request('/users/?id=' + this.id).then((res) => {if (res.statusText === 'OK') {
-        this.username = res.data.username
-        this.email = res.data.email
+        this.username = res.data.username,
+        this.email = res.data.email,
+        this.avatar = BASE_URL + res.data.avatar
       }
     }).
     then(() => {
