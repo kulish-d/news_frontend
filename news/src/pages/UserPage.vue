@@ -121,26 +121,17 @@
 
             </v-row>
             <v-row>
-                <v-file-input chips multiple label="Choose the image"></v-file-input>
+                <v-file-input chips multiple label="Choose the image"
+                  v-model="PostForm.image"
+                  accept="image/*"
+                  :rules="imageRules"
+                  hint="required"
+                >
+                </v-file-input>
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer>
-
-            <v-alert
-              v-show="addPostError"
-              text
-              type="error"
-              outlined
-              title="Ooops 0_o"
-            >
-              <div v-if="addPostErrorText.title">title: {{ addPostErrorText.title[0] }}</div>
-              <div v-if="addPostErrorText.text">text: {{ addPostErrorText.text[0] }}</div>
-              <div v-if="addPostErrorText.tags">tags: {{ addPostErrorText.tags[0] }}</div>
-            </v-alert>
-
-          </v-spacer>
+        <v-card-actions id="alerts-and-buttons">
 
           <v-btn
             color="blue-darken-1"
@@ -149,6 +140,31 @@
           >
             Close
           </v-btn>
+
+
+          <v-alert
+              v-show="!(this.PostForm.title && this.PostForm.text && this.PostForm.tags.length && this.PostForm.image)"
+              text
+              type="warning"
+              outlined
+              title="Pffff.."
+          >
+            All fields are required!
+          </v-alert>
+
+          <v-alert
+            v-show="addPostError"
+            text
+            type="error"
+            outlined
+            title="Ooops 0_o"
+          >
+            <div v-if="addPostErrorText.title">title: {{ addPostErrorText.title[0] }}</div>
+            <div v-if="addPostErrorText.text">text: {{ addPostErrorText.text[0] }}</div>
+            <div v-if="addPostErrorText.tags">tags: {{ addPostErrorText.tags[0] }}</div>
+            <div v-if="addPostErrorText.image">image: {{ addPostErrorText.image[0] }}</div>
+          </v-alert>
+
           <v-btn
             color="blue-darken-1"
             variant="text"
@@ -156,11 +172,8 @@
           >
             Save
           </v-btn>
-
         </v-card-actions>
         
-
-
       </v-card>
     </v-dialog>
 
@@ -217,9 +230,19 @@ export default {
         title: '',
         text: '',
         tags: [],
+        image: null,
       },
+
+      imageRules: [
+        value => {
+          if (value) return true
+          return 'You must choose the image'
+        },
+      ],
+        
+
       addPostError: false,
-      addPostErrorText: ''
+      addPostErrorText: '',
     }
   },
   methods: {
@@ -237,31 +260,37 @@ export default {
     },
 
     async addPost() {
-      await axios_request.post('/posts/', {
-        title: this.PostForm.title,
-        text: this.PostForm.text,
-        tags: this.PostForm.tags.map((tag) => {return {'text': tag}})
-      },
-       {
-        headers: {
-          Authorization: 'Token ' + localStorage.getItem('token'),
-        }
+      if (this.formIsValid()) {
+        await axios_request.post('/posts/', {
+          title: this.PostForm.title,
+          text: this.PostForm.text,
+          tags: JSON.stringify(this.PostForm.tags),
+          image: this.PostForm.image[0]
+        }, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: 'Token ' + localStorage.getItem('token'),
+          }
+        })
+        .then((res) => {
+          if (res.status === 201) {
+            this.closeForm()
+            this.PostForm.title = '',
+            this.PostForm.text = '',
+            this.PostForm.tags = '',
+            this.PostForm.image = null,
+            this.addPostError = false,
+            this.addPostErrorText = '',
+            this.getUserData()
+          }
+          }
+        )
+        .catch((res) => {
+          this.addPostError = true,
+          this.addPostErrorText = res.response.data
       })
-      .then((res) => {
-        if (res.status === 201) {
-          this.closeForm()
-          this.PostForm.title = '',
-          this.PostForm.text = '',
-          this.PostForm.tags = '',
-          this.getUserData()
-        }
-        }
-      )
-      .catch((res) => {
-        this.addPostError = true;
-        this.addPostErrorText = res.response.data
-    })
-    },
+    }
+  },
 
     showUserActions() {
       return this.id === this.$store.getters.getUserId;
@@ -273,6 +302,10 @@ export default {
 
     closeForm() {
       this.$store.commit('updatePostWindow', false);
+    },
+
+    formIsValid() {
+      return !!(this.PostForm.title && this.PostForm.text && this.PostForm.tags.length && this.PostForm.image);
     },
 
     removeChip (item) {
@@ -319,6 +352,7 @@ export default {
       justify-content: space-between;
     }
   }
+
   @media (width < 601px) {
     #card-and-modal {
       width: 90%;
@@ -331,6 +365,12 @@ export default {
     #edit-profile-form {
       
     }
+  }
+
+  #alerts-and-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   #user-card {
