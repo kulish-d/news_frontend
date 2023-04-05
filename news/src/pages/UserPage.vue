@@ -124,6 +124,8 @@
                 <v-file-input chips multiple label="Choose the image"
                   v-model="PostForm.image"
                   accept="image/*"
+                  :rules="imageRules"
+                  hint="required"
                 >
                 </v-file-input>
             </v-row>
@@ -224,6 +226,12 @@ export default {
         tags: [],
         image: null,
       },
+      imageRules: [
+        value => {
+          if (value) return true
+          return 'You must choose the image'
+        },
+      ],
       addPostError: false,
       addPostErrorText: '',
     }
@@ -243,41 +251,38 @@ export default {
     },
 
     async addPost() {
-      // const data = new FormData();
-      // data.append('title', this.PostForm.title)
-      // data.append('text', this.PostForm.text)
-      // data.append('tags', JSON.stringify(this.PostForm.tags.map((tag) => {return {'text': tag}})))
-      // data.append('image', this.PostForm.image[0])
-      // console.log(data.get('tags'))
-
-      await axios_request.post('/posts/', {
-        title: this.PostForm.title,
-        text: this.PostForm.text,
-        tags: JSON.stringify(this.PostForm.tags.map((tag) => {return {'text': tag}})),
-        image: this.PostForm.image[0]
-      }, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: 'Token ' + localStorage.getItem('token'),
-        }
+      if (this.PostForm.image) {
+        await axios_request.post('/posts/', {
+          title: this.PostForm.title,
+          text: this.PostForm.text,
+          tags: JSON.stringify(this.PostForm.tags),
+          image: this.PostForm.image[0]
+        }, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: 'Token ' + localStorage.getItem('token'),
+          }
+        })
+        .then((res) => {
+          if (res.status === 201) {
+            this.closeForm()
+            this.PostForm.title = '',
+            this.PostForm.text = '',
+            this.PostForm.tags = '',
+            this.PostForm.image = null,
+            this.addPostError = false,
+            this.addPostErrorText = '',
+            this.getUserData()
+          }
+          }
+        )
+        .catch((res) => {
+          console.log(res),
+          this.addPostError = true,
+          this.addPostErrorText = res.response.data
       })
-      .then((res) => {
-        if (res.status === 201) {
-          this.closeForm()
-          this.PostForm.title = '',
-          this.PostForm.text = '',
-          this.PostForm.tags = '',
-          this.PostForm.image = null,
-          this.getUserData()
-        }
-        }
-      )
-      .catch((res) => {
-        console.log(res),
-        this.addPostError = true,
-        this.addPostErrorText = res.response.data
-    })
-    },
+    }
+  },
 
     showUserActions() {
       return this.id === this.$store.getters.getUserId;
