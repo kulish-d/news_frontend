@@ -16,7 +16,8 @@ export default {
         .post('/signup/', {
             username: regForm.username,
             email: regForm.email,
-            password: regForm.password
+            password: regForm.password,
+            avatar: regForm.avatar,
         })
     },
 

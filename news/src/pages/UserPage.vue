@@ -121,13 +121,13 @@
 
             </v-row>
             <v-row>
-                <v-file-input chips multiple label="Choose the image"
-                  v-model="PostForm.image"
-                  accept="image/*"
-                  :rules="imageRules"
-                  hint="required"
-                >
-                </v-file-input>
+              <v-file-input chips multiple label="Choose the image"
+                v-model="PostForm.image"
+                accept="image/*"
+                :rules="imageRules"
+                hint="required"
+              >
+              </v-file-input>
             </v-row>
           </v-container>
         </v-card-text>
