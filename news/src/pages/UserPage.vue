@@ -277,7 +277,6 @@ export default {
           }
         )
         .catch((res) => {
-          console.log(res),
           this.addPostError = true,
           this.addPostErrorText = res.response.data
       })

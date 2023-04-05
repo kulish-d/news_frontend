@@ -1,16 +1,25 @@
 <template>
   <v-col>
-    <v-card elevation="10" outlined shaped width="100%">
-      <v-card-title>{{ post.title }}</v-card-title>
-      <v-card-subtitle><router-link :to="{name: 'users', params: {id: post.author.id}}">{{post.author.username}}</router-link></v-card-subtitle>
-      <v-card-text>{{ post.text }}</v-card-text>
-      <v-img :src="post.image" width="200" :aspect-ratio="1/1" ></v-img>
-      <div v-if="post.tags">
-        <PostTag
-          :tag="tag.text"
-          v-bind:key="tag.id"
-          v-for="tag in post.tags"
-        />
+    <v-card elevation="10" outlined shaped width="100%" id="post-card">
+      <div id="left-part-card">
+        <v-card-title>{{ post.title }}</v-card-title>
+        <v-card-subtitle><router-link :to="{name: 'users', params: {id: post.author.id}}">{{post.author.username}}</router-link></v-card-subtitle>
+        <v-card-text>{{ post.text }}</v-card-text>
+        <div v-if="post.tags"></div>
+          <PostTag
+              :tag="tag.text"
+              v-bind:key="tag.id"
+              v-for="tag in post.tags"
+          />
+      </div>
+      <div id="right-part-card">
+        <v-img
+         :src="post.image"
+         contain
+         max-width="300"
+         max-height="200"
+         id="post-img">
+        </v-img>
       </div>
     </v-card>
   </v-col>
@@ -31,5 +40,25 @@ export default {
 <style>
   .v-card__subtitle a {
     text-decoration: none;
+  }
+
+  #post-card {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+  }
+
+  @media (width < 515px) {
+    #post-card {
+      flex-direction: column;
+    }
+  }
+
+  #left-part-card {
+    align-items: center;
+  }
+
+  #right-part-card{
+    place-self: center;
   }
 </style>
