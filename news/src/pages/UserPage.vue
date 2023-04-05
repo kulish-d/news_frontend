@@ -131,23 +131,7 @@
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer>
-
-            <v-alert
-              v-show="addPostError"
-              text
-              type="error"
-              outlined
-              title="Ooops 0_o"
-            >
-              <div v-if="addPostErrorText.title">title: {{ addPostErrorText.title[0] }}</div>
-              <div v-if="addPostErrorText.text">text: {{ addPostErrorText.text[0] }}</div>
-              <div v-if="addPostErrorText.tags">tags: {{ addPostErrorText.tags[0] }}</div>
-              <div v-if="addPostErrorText.image">image: {{ addPostErrorText.image[0] }}</div>
-            </v-alert>
-
-          </v-spacer>
+        <v-card-actions id="alerts-and-buttons">
 
           <v-btn
             color="blue-darken-1"
@@ -156,6 +140,31 @@
           >
             Close
           </v-btn>
+
+
+          <v-alert
+              v-show="!(this.PostForm.title && this.PostForm.text && this.PostForm.tags.length && this.PostForm.image)"
+              text
+              type="warning"
+              outlined
+              title="Pffff.."
+          >
+            All fields are required!
+          </v-alert>
+
+          <v-alert
+            v-show="addPostError"
+            text
+            type="error"
+            outlined
+            title="Ooops 0_o"
+          >
+            <div v-if="addPostErrorText.title">title: {{ addPostErrorText.title[0] }}</div>
+            <div v-if="addPostErrorText.text">text: {{ addPostErrorText.text[0] }}</div>
+            <div v-if="addPostErrorText.tags">tags: {{ addPostErrorText.tags[0] }}</div>
+            <div v-if="addPostErrorText.image">image: {{ addPostErrorText.image[0] }}</div>
+          </v-alert>
+
           <v-btn
             color="blue-darken-1"
             variant="text"
@@ -163,11 +172,8 @@
           >
             Save
           </v-btn>
-
         </v-card-actions>
         
-
-
       </v-card>
     </v-dialog>
 
@@ -226,12 +232,15 @@ export default {
         tags: [],
         image: null,
       },
+
       imageRules: [
         value => {
           if (value) return true
           return 'You must choose the image'
         },
       ],
+        
+
       addPostError: false,
       addPostErrorText: '',
     }
@@ -251,7 +260,7 @@ export default {
     },
 
     async addPost() {
-      if (this.PostForm.image) {
+      if (this.formIsValid()) {
         await axios_request.post('/posts/', {
           title: this.PostForm.title,
           text: this.PostForm.text,
@@ -293,6 +302,10 @@ export default {
 
     closeForm() {
       this.$store.commit('updatePostWindow', false);
+    },
+
+    formIsValid() {
+      return !!(this.PostForm.title && this.PostForm.text && this.PostForm.tags.length && this.PostForm.image);
     },
 
     removeChip (item) {
@@ -339,6 +352,7 @@ export default {
       justify-content: space-between;
     }
   }
+
   @media (width < 601px) {
     #card-and-modal {
       width: 90%;
@@ -351,6 +365,12 @@ export default {
     #edit-profile-form {
       
     }
+  }
+
+  #alerts-and-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   #user-card {
