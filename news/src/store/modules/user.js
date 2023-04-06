@@ -12,12 +12,17 @@ export default {
   
   actions: {
     async createUser(ctx, regForm) {
+        console.log(regForm)
         await axios_request
         .post('/signup/', {
             username: regForm.username,
             email: regForm.email,
             password: regForm.password,
-            avatar: regForm.avatar,
+            avatar: regForm.avatar[0],
+        }, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
         })
     },
 
