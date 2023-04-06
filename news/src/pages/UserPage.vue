@@ -5,45 +5,43 @@
     <div id="card-and-modal"
       v-if="this.id"
       >
-      <v-card id="user-card" tile max-width="500">
+      <v-card id="user-card" tile max-width="400">
         <v-col>
-          <v-avatar size="100">
+          <v-avatar size="150">
             <v-img :src="this.avatar"></v-img>
           </v-avatar>
-
         </v-col>
-          <v-list-item color="rgba(0, 0, 0, .4)">
-            <v-list-item-content>
-              <v-list-item-title class="title">{{ username }}</v-list-item-title>
-              <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-
-            <v-col id="user-btns"
-              v-if="showUserActions"
+        <v-col id="data-and-buttons">
+          <div id="username">{{ username }}</div>
+          <div id="email">{{ email }}</div>
+          <div id="user-btns"
+            v-if="showUserActions()"
+          >
+            <v-btn
+              class="ma-2"
+              outlined
+              color="indigo"
             >
-              <v-btn
-                class="ma-2"
-                outlined
-                color="indigo"
-              >
-                Edit profile
-              </v-btn>
+              Edit profile
+            </v-btn>
 
-              <v-btn
-                v-on:click="openPostAddForm"
-                class="ma-2"
-                outlined
-                color="indigo"
-              >
-                Add Post
-              </v-btn>
-            </v-col>
-
+            <v-btn
+              v-on:click="openPostAddForm"
+              class="ma-2"
+              outlined
+              color="indigo"
+            >
+              Add Post
+            </v-btn>
+          </div>
+        </v-col>
+          
+            
+          
         </v-card>
 
         <v-form id="edit-profile-form"
-          v-if="showUserActions"
+          v-if="showUserActions()"
           lazy-validation
         >
           <v-text-field
@@ -241,7 +239,6 @@ export default {
         },
       ],
         
-
       addPostError: false,
       addPostErrorText: '',
     }
@@ -295,7 +292,7 @@ export default {
   },
 
     showUserActions() {
-      return this.id === this.$store.getters.getUserId;
+      return this.id == this.$store.getters.getUserId;
     },
 
     openPostAddForm(){
@@ -321,6 +318,10 @@ export default {
   
   async mounted() {
     await this.getUserData();
+  },
+
+  async beforMount() {
+    await this.showUserActions();
   },
 
   watch: {
@@ -359,6 +360,7 @@ export default {
     #card-and-modal {
       width: 90%;
       flex-direction: column;
+      justify-content: center;
     }
 
     #user-card {
@@ -380,8 +382,17 @@ export default {
     align-self: center;
   }
 
-  #user-btns {
+  #data-and-buttons {
+    display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #user-btns {
+    display: flex;;
+    flex-direction: column;
+    justify-content: center;
   }
 
   #edit-profile-form {
