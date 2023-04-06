@@ -13,27 +13,21 @@
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12">
-                <v-text-field
-                  label="Email"
-                  required
-                  v-model="AuthForm.email"
-                >
-                </v-text-field>
-              </v-col>
-              <v-row>
-              </v-row>
-              <v-row>
-              <v-col cols="12">
-                <v-text-field
-                  label="Password"
-                  type="password"
-                  required
-                  v-model="AuthForm.password"
-                >
-                </v-text-field>
-              </v-col>
-              </v-row>
+              <v-text-field
+                label="Email"
+                required
+                v-model="AuthForm.email"
+              >
+              </v-text-field>
+            </v-row>
+            <v-row>
+              <v-text-field
+                label="Password"
+                type="password"
+                required
+                v-model="AuthForm.password"
+              >
+              </v-text-field>
             </v-row>
           </v-container>
         </v-card-text>

@@ -122,8 +122,6 @@ export default {
 
   data () {
     return {
-      // dialog: false,
-      
       RegistrationForm: {
         username: '',
         email: '',

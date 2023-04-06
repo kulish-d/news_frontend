@@ -12,7 +12,6 @@ export default {
   
   actions: {
     async createUser(ctx, regForm) {
-        console.log(regForm)
         await axios_request
         .post('/signup/', {
             username: regForm.username,
