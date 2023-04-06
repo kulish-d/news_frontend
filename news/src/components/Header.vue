@@ -61,7 +61,7 @@
     <v-avatar
       id="avatar"
       color="teal"
-      size="38"
+      size="48"
     >
       <v-img
         :src="getMyAva"

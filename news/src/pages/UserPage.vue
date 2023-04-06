@@ -18,6 +18,7 @@
             v-if="showUserActions()"
           >
             <v-btn
+              v-on:click="openOrCloseEditProfileWindow(true)"
               class="ma-2"
               outlined
               color="indigo"
@@ -36,32 +37,55 @@
           </div>
         </v-col>
           
-            
-          
-        </v-card>
-
-        <v-form id="edit-profile-form"
-          v-if="showUserActions()"
+      </v-card>
+      <v-dialog
+        v-model="isOpenEditWindow"
+        transition="dialog-top-transition"
+        scrollable="false"
+      >
+        <v-card id="edit-profile-form"
           lazy-validation
+          
         >
-          <v-text-field
-            v-model="username"
-            label="Username"
-          ></v-text-field>
+          <v-container>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="username"
+                label="Username"
+              ></v-text-field>
 
-          <v-text-field
-            v-model="email"
-            label="Email"
-            required
-          ></v-text-field>
-        </v-form>
+              <v-text-field
+                v-model="email"
+                label="Email"
+                required
+              ></v-text-field>
+            </v-col>
+            <v-col>
+              <v-file-input chips multiple label="Change your ava?"
+                v-model="avatar"
+                accept="image/*"
+                hint="not required"
+              >
+              </v-file-input>
+
+              <v-btn
+                v-on:click="changeUserData"
+              >
+                Change
+              </v-btn>
+            </v-col>
+          </v-row>
+          </v-container>
+        </v-card>
+      </v-dialog>
       </div>
     <div v-else> 
       <v-progress-circular
-      :size="100"
-      :width="7"
-      color="purple"
-      indeterminate
+        :size="100"
+        :width="7"
+        color="purple"
+        indeterminate
       >
       </v-progress-circular>
     </div>
@@ -238,7 +262,9 @@ export default {
           return 'You must choose the image'
         },
       ],
-        
+      
+      isOpenEditWindow: false,
+
       addPostError: false,
       addPostErrorText: '',
     }
@@ -256,6 +282,11 @@ export default {
          this.posts = res.data
     }})
     })
+    },
+
+    async changeUserData() {
+
+      this.openOrCloseEditProfileWindow(false);
     },
 
     async addPost() {
@@ -287,9 +318,13 @@ export default {
         .catch((res) => {
           this.addPostError = true,
           this.addPostErrorText = res.response.data
-      })
-    }
-  },
+        })
+      }
+    },
+
+    openOrCloseEditProfileWindow(status) {
+      this.isOpenEditWindow = status;
+    },
 
     showUserActions() {
       return this.id == this.$store.getters.getUserId;
