@@ -266,7 +266,7 @@ export default {
         await axios_request.post('/posts/', {
           title: this.PostForm.title,
           text: this.PostForm.text,
-          tags: JSON.stringify(this.PostForm.tags),
+          tags: JSON.stringify(this.PostForm.tags.map((tag) => { return tag.replace(/\s+/g, ' ').trim() }).filter((tag) => { return tag !== '' })),
           image: this.PostForm.image[0]
         }, {
           headers: {
