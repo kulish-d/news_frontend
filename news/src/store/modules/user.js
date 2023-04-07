@@ -25,6 +25,26 @@ export default {
         })
     },
 
+    async changeUserData(ctx, changingForm) {
+      const token = localStorage.getItem('token');
+      const FD = new FormData();
+      FD.append('username', changingForm.username);
+      FD.append('email', changingForm.email);
+      // if (changingForm.avatar) {
+      //   FD.append('avatar', changingForm.avatar);
+      // }
+      await axios_request
+      .patch('/me/', FD, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: 'Token ' + token,
+        }
+      }
+      )
+      .then((res) => { if (res.status === 204) this.dispatch('getUser') })
+      .catch((err) => { return err })
+    },
+
     async authUser(ctx, authForm) {
       await axios_request
       .post('/token/login/', {
@@ -57,12 +77,12 @@ export default {
             Authorization: 'Token ' + token,
           }
         })
-        .then((res) => {if (res.statusText === 'OK') { 
+        .then((res) => { if (res.statusText === 'OK') { 
           const server_data  = {
             token: token,
-            id: res.data.user_id,
+            id: res.data.id,
             username: res.data.username,
-            avatar: BASE_URL + res.data.user_avatar,
+            avatar: BASE_URL + res.data.avatar,
           }
           ctx.commit('updateUser', server_data)
         }

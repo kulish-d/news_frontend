@@ -8,12 +8,12 @@
       <v-card id="user-card" tile max-width="400">
         <v-col>
           <v-avatar size="150">
-            <v-img :src="this.avatar"></v-img>
+            <v-img :src="this.UserDataForm.avatar"></v-img>
           </v-avatar>
         </v-col>
         <v-col id="data-and-buttons">
-          <div id="username">{{ username }}</div>
-          <div id="email">{{ email }}</div>
+          <div id="username">{{ UserDataForm.username }}</div>
+          <div id="email">{{ UserDataForm.email }}</div>
           <div id="user-btns"
             v-if="showUserActions()"
           >
@@ -41,7 +41,6 @@
       <v-dialog
         v-model="isOpenEditWindow"
         transition="dialog-top-transition"
-        scrollable="false"
       >
         <v-card id="edit-profile-form"
           lazy-validation
@@ -51,19 +50,19 @@
           <v-row>
             <v-col>
               <v-text-field
-                v-model="username"
+                v-model="UserDataForm.username"
                 label="Username"
               ></v-text-field>
 
               <v-text-field
-                v-model="email"
+                v-model="UserDataForm.email"
                 label="Email"
                 required
               ></v-text-field>
             </v-col>
             <v-col>
               <v-file-input chips multiple label="Change your ava?"
-                v-model="avatar"
+                v-model="newAvatar"
                 accept="image/*"
                 hint="not required"
               >
@@ -243,12 +242,19 @@ export default {
     Header,
     Post,
   },
+
   data() {
     return {
-      username: '',
-      email: '',
-      avatar: null,
+
+      UserDataForm: {
+        username: '',
+        email: '',
+        avatar: '',
+      },
+
+      newAvatar: null,
       posts: [],
+
       PostForm: {
         title: '',
         text: '',
@@ -269,12 +275,13 @@ export default {
       addPostErrorText: '',
     }
   },
+
   methods: {
     async getUserData() {
       await axios_request('/users/?id=' + this.id).then((res) => {if (res.statusText === 'OK') {
-        this.username = res.data.username,
-        this.email = res.data.email,
-        this.avatar = BASE_URL + res.data.avatar
+        this.UserDataForm.username = res.data.username,
+        this.UserDataForm.email = res.data.email,
+        this.UserDataForm.avatar = BASE_URL + res.data.avatar
       }
     }).
     then(() => {
@@ -284,9 +291,13 @@ export default {
     })
     },
 
-    async changeUserData() {
-
-      this.openOrCloseEditProfileWindow(false);
+    changeUserData() {
+      this.$store.dispatch('changeUserData', this.UserDataForm)
+      .then((res) => {
+        console.log(res);
+        this.getUserData();
+      })
+      .then(() => this.openOrCloseEditProfileWindow(false))
     },
 
     async addPost() {
@@ -347,7 +358,7 @@ export default {
     },
 
     getUsername() {
-      return this.username;
+      return this.UserDataForm.username;
     }
   },
   
