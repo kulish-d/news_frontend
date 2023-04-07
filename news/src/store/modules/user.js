@@ -17,7 +17,7 @@ export default {
             username: regForm.username,
             email: regForm.email,
             password: regForm.password,
-            avatar: regForm.avatar[0],
+            avatar: regForm.avatar ? regForm.avatar[0] : '',
         }, {
           headers: {
             'Content-Type': 'multipart/form-data',
