@@ -3,7 +3,12 @@
     <v-card elevation="10" outlined shaped width="100%" id="post-card">
       <div id="left-part-card">
         <v-card-title>{{ post.title }}</v-card-title>
-        <v-card-subtitle><router-link :to="{name: 'users', params: {id: post.author.id}}">{{post.author.username}}</router-link></v-card-subtitle>
+        <v-card-subtitle v-if="isAuth">
+          <router-link :to="{name: 'users', params: {id: post.author.id}}">{{post.author.username}}</router-link>
+        </v-card-subtitle>
+        <v-card-subtitle v-else>
+          {{post.author.username}}
+        </v-card-subtitle>
         <v-card-text>{{ post.text }}</v-card-text>
         <div v-if="post.tags"></div>
           <PostTag
@@ -26,6 +31,8 @@
 </template>
     
 <script>
+import {mapGetters} from 'vuex';
+
 import PostTag from '../components/PostTag.vue'
 
 export default {
@@ -33,6 +40,7 @@ export default {
   components: {
     PostTag,
   },
+  computed: mapGetters(['isAuth']),
   props: ['post'],
 }
 </script>

@@ -1,9 +1,10 @@
-import { axios_request} from '../../../api/post'
+import { axios_request, BASE_URL } from '../../../api/post'
 export default {
   state: {
     userToken: localStorage.getItem('token'),
     userID: null,
     username: null,
+    avatar: null,
     authWindowIsOpen: false,
     registerWindowIsOpen: false,
     postWindowIsOpen: false,
@@ -15,8 +16,33 @@ export default {
         .post('/signup/', {
             username: regForm.username,
             email: regForm.email,
-            password: regForm.password
+            password: regForm.password,
+            avatar: regForm.avatar ? regForm.avatar[0] : '',
+        }, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
         })
+    },
+
+    async changeUserData(ctx, changingForm) {
+      const token = localStorage.getItem('token');
+      const FD = new FormData();
+      FD.append('username', changingForm.username);
+      FD.append('email', changingForm.email);
+      if (changingForm.newAvatar) {
+        FD.append('avatar', changingForm.newAvatar[0]);
+      }
+      await axios_request
+      .patch('/me/', FD, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: 'Token ' + token,
+        }
+      }
+      )
+      .then((res) => { if (res.status === 204) this.dispatch('getUser') })
+      .catch((err) => { return err })
     },
 
     async authUser(ctx, authForm) {
@@ -46,16 +72,17 @@ export default {
     async getUser(ctx) {
       const token = localStorage.getItem('token')
       if (token) {
-      await axios_request.get('/me/', {
-        headers: {
-          Authorization: 'Token ' + token,
-        }
-      })
-        .then((res) => {if (res.statusText === 'OK') { 
+        await axios_request.get('/me/', {
+          headers: {
+            Authorization: 'Token ' + token,
+          }
+        })
+        .then((res) => { if (res.statusText === 'OK') { 
           const server_data  = {
             token: token,
-            id: res.data.user_id,
-            username: res.data.username
+            id: res.data.id,
+            username: res.data.username,
+            avatar: BASE_URL + res.data.avatar,
           }
           ctx.commit('updateUser', server_data)
         }
@@ -70,6 +97,7 @@ export default {
       state.userToken = some_data.token;
       state.userID = some_data.id;
       state.username = some_data.username;
+      state.avatar = some_data.avatar;
     },
 
     updateAuthWindow(state, status) {
@@ -96,6 +124,10 @@ export default {
 
     getUserId(state) {
       return state.userID
+    },
+
+    getMyAva(state) {
+      return state.avatar
     },
 
     isOpenAuthWindow(state) {
