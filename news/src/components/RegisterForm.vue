@@ -13,23 +13,23 @@
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="3">
                 <v-text-field
                   label="Username"
                   required
                   v-model="RegistrationForm.username"
                 >
                 </v-text-field>
-              </v-col>
-              <v-col cols="9">
+            </v-row>
+            <v-row>
                 <v-text-field
                   label="Email"
                   required
                   v-model="RegistrationForm.email"
                 >
                 </v-text-field>
-              </v-col>
-              <v-col cols="12">
+            </v-row>
+            <v-row>
+              <v-col>
                 <v-text-field
                   label="Password"
                   type="password"
@@ -38,6 +38,8 @@
                   v-model="RegistrationForm.password"
                 >
                 </v-text-field>
+              </v-col>
+              <v-col>
                 <v-text-field
                   label="Password (again)"
                   type="password"
@@ -47,9 +49,18 @@
                 </v-text-field>
               </v-col>
             </v-row>
+              <v-row>
+                <v-file-input chips multiple label="Choose your ava"
+                  v-model="RegistrationForm.avatar"
+                  accept="image/*"
+                  hint="not required"
+                >
+                </v-file-input>
+              </v-row>
             <v-row>
               <v-alert
                 border="left"
+                outlined
                 color="red"
                 type="warning"
                 v-if="RegistrationForm.password !== RegistrationForm.password2"
@@ -59,6 +70,7 @@
 
               <v-alert
                 border="left"
+                outlined
                 color="red"
                 type="warning"
                 v-if="!passwordValidator(RegistrationForm.password)"
@@ -67,6 +79,7 @@
               </v-alert>
               <v-alert
                 border="left"
+                outlined
                 color="red"
                 type="warning"
                 v-if="!emailValidator(RegistrationForm.email)"
@@ -109,13 +122,12 @@ export default {
 
   data () {
     return {
-      dialog: false,
-      
       RegistrationForm: {
         username: '',
         email: '',
         password: '',
         password2: '',
+        avatar: null,
       },
     }
   },

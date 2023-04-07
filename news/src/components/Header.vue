@@ -61,8 +61,12 @@
     <v-avatar
       id="avatar"
       color="teal"
-      size="38"
+      size="46"
     >
+      <v-img
+        :src="getMyAva"
+      >
+      </v-img>
     </v-avatar>
 
     <v-btn
@@ -112,7 +116,7 @@ export default {
     await this.$store.dispatch('getUser');
   },
 
-  computed: mapGetters(['isAuth', 'getUsername']),
+  computed: mapGetters(['isAuth', 'getUsername', 'getMyAva']),
 }
 </script>
 

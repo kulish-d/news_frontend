@@ -5,65 +5,86 @@
     <div id="card-and-modal"
       v-if="this.id"
       >
-      <v-card id="user-card" tile max-width="500">
+      <v-card id="user-card" tile max-width="400">
         <v-col>
-          <v-avatar size="100">
-            <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
+          <v-avatar size="150">
+            <v-img :src="this.UserDataForm.avatar"></v-img>
           </v-avatar>
-
         </v-col>
-          <v-list-item color="rgba(0, 0, 0, .4)">
-            <v-list-item-content>
-              <v-list-item-title class="title">{{ username }}</v-list-item-title>
-              <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-
-            <v-col id="user-btns"
-              v-if="showUserActions"
+        <v-col id="data-and-buttons">
+          <div id="username">{{ UserDataForm.username }}</div>
+          <div id="email">{{ UserDataForm.email }}</div>
+          <div id="user-btns"
+            v-if="showUserActions()"
+          >
+            <v-btn
+              v-on:click="openOrCloseEditProfileWindow(true)"
+              class="ma-2"
+              outlined
+              color="indigo"
             >
-                <v-btn
-                  class="ma-2"
-                  outlined
-                  color="indigo"
-                >
-                  Edit profile
-                </v-btn>
+              Edit profile
+            </v-btn>
 
-                <v-btn
-                  v-on:click="openPostAddForm"
-                  class="ma-2"
-                  outlined
-                  color="indigo"
-                >
-                  Add Post
-                </v-btn>
-            </v-col>
-
-        </v-card>
-
-        <v-form id="edit-profile-form"
-          v-if="showUserActions"
+            <v-btn
+              v-on:click="openPostAddForm"
+              class="ma-2"
+              outlined
+              color="indigo"
+            >
+              Add Post
+            </v-btn>
+          </div>
+        </v-col>
+          
+      </v-card>
+      <v-dialog
+        v-model="isOpenEditWindow"
+        transition="dialog-top-transition"
+      >
+        <v-card id="edit-profile-form"
           lazy-validation
+          
         >
-          <v-text-field
-            v-model="username"
-            label="Username"
-          ></v-text-field>
+          <v-container>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="UserDataForm.username"
+                label="Username"
+              ></v-text-field>
 
-          <v-text-field
-            v-model="email"
-            label="Email"
-            required
-          ></v-text-field>
-        </v-form>
+              <v-text-field
+                v-model="UserDataForm.email"
+                label="Email"
+                required
+              ></v-text-field>
+            </v-col>
+            <v-col>
+              <v-file-input chips multiple label="Change your ava?"
+                v-model="UserDataForm.newAvatar"
+                accept="image/*"
+                hint="not required"
+              >
+              </v-file-input>
+
+              <v-btn
+                v-on:click="changeUserData"
+              >
+                Change
+              </v-btn>
+            </v-col>
+          </v-row>
+          </v-container>
+        </v-card>
+      </v-dialog>
       </div>
     <div v-else> 
       <v-progress-circular
-      :size="100"
-      :width="7"
-      color="purple"
-      indeterminate
+        :size="100"
+        :width="7"
+        color="purple"
+        indeterminate
       >
       </v-progress-circular>
     </div>
@@ -121,13 +142,13 @@
 
             </v-row>
             <v-row>
-                <v-file-input chips multiple label="Choose the image"
-                  v-model="PostForm.image"
-                  accept="image/*"
-                  :rules="imageRules"
-                  hint="required"
-                >
-                </v-file-input>
+              <v-file-input chips multiple label="Choose the image"
+                v-model="PostForm.image"
+                accept="image/*"
+                :rules="imageRules"
+                hint="required"
+              >
+              </v-file-input>
             </v-row>
           </v-container>
         </v-card-text>
@@ -208,7 +229,7 @@
 
 
 <script>
-import { axios_request } from '../../api/post';
+import { axios_request, BASE_URL } from '../../api/post';
 import { mapGetters } from "vuex";
 
 import Header from '../components/Header.vue';
@@ -221,11 +242,19 @@ export default {
     Header,
     Post,
   },
+
   data() {
     return {
-      username: '',
-      email: '',
+
+      UserDataForm: {
+        username: '',
+        email: '',
+        avatar: '',
+        newAvatar: null,
+      },
+
       posts: [],
+
       PostForm: {
         title: '',
         text: '',
@@ -239,17 +268,20 @@ export default {
           return 'You must choose the image'
         },
       ],
-        
+      
+      isOpenEditWindow: false,
 
       addPostError: false,
       addPostErrorText: '',
     }
   },
+
   methods: {
     async getUserData() {
       await axios_request('/users/?id=' + this.id).then((res) => {if (res.statusText === 'OK') {
-        this.username = res.data.username
-        this.email = res.data.email
+        this.UserDataForm.username = res.data.username,
+        this.UserDataForm.email = res.data.email,
+        this.UserDataForm.avatar = BASE_URL + res.data.avatar
       }
     }).
     then(() => {
@@ -259,12 +291,20 @@ export default {
     })
     },
 
+    changeUserData() {
+      this.$store.dispatch('changeUserData', this.UserDataForm)
+      .then(() => {
+        this.getUserData();
+      })
+      .then(() => this.openOrCloseEditProfileWindow(false))
+    },
+
     async addPost() {
       if (this.formIsValid()) {
         await axios_request.post('/posts/', {
           title: this.PostForm.title,
           text: this.PostForm.text,
-          tags: JSON.stringify(this.PostForm.tags),
+          tags: JSON.stringify(this.PostForm.tags.map((tag) => { return tag.replace(/\s+/g, ' ').trim() }).filter((tag) => { return tag !== '' })),
           image: this.PostForm.image[0]
         }, {
           headers: {
@@ -288,12 +328,16 @@ export default {
         .catch((res) => {
           this.addPostError = true,
           this.addPostErrorText = res.response.data
-      })
-    }
-  },
+        })
+      }
+    },
+
+    openOrCloseEditProfileWindow(status) {
+      this.isOpenEditWindow = status;
+    },
 
     showUserActions() {
-      return this.id === this.$store.getters.getUserId;
+      return this.id == this.$store.getters.getUserId;
     },
 
     openPostAddForm(){
@@ -313,12 +357,16 @@ export default {
     },
 
     getUsername() {
-      return this.username;
+      return this.UserDataForm.username;
     }
   },
   
   async mounted() {
     await this.getUserData();
+  },
+
+  async beforMount() {
+    await this.showUserActions();
   },
 
   watch: {
@@ -357,6 +405,7 @@ export default {
     #card-and-modal {
       width: 90%;
       flex-direction: column;
+      justify-content: center;
     }
 
     #user-card {
@@ -378,8 +427,17 @@ export default {
     align-self: center;
   }
 
-  #user-btns {
+  #data-and-buttons {
+    display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #user-btns {
+    display: flex;;
+    flex-direction: column;
+    justify-content: center;
   }
 
   #edit-profile-form {
