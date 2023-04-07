@@ -30,9 +30,9 @@ export default {
       const FD = new FormData();
       FD.append('username', changingForm.username);
       FD.append('email', changingForm.email);
-      // if (changingForm.avatar) {
-      //   FD.append('avatar', changingForm.avatar);
-      // }
+      if (changingForm.newAvatar) {
+        FD.append('avatar', changingForm.newAvatar[0]);
+      }
       await axios_request
       .patch('/me/', FD, {
         headers: {

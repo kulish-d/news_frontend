@@ -62,7 +62,7 @@
             </v-col>
             <v-col>
               <v-file-input chips multiple label="Change your ava?"
-                v-model="newAvatar"
+                v-model="UserDataForm.newAvatar"
                 accept="image/*"
                 hint="not required"
               >
@@ -250,9 +250,9 @@ export default {
         username: '',
         email: '',
         avatar: '',
+        newAvatar: null,
       },
 
-      newAvatar: null,
       posts: [],
 
       PostForm: {
@@ -293,8 +293,7 @@ export default {
 
     changeUserData() {
       this.$store.dispatch('changeUserData', this.UserDataForm)
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         this.getUserData();
       })
       .then(() => this.openOrCloseEditProfileWindow(false))
