@@ -1,7 +1,7 @@
 <template>
   <div>
     <Post
-      v-for="post in finalPosts"
+      v-for="post in filteredPosts"
       v-bind:key="post.id"
       :post="post"
     />
@@ -17,7 +17,7 @@ export default {
   components: {
     Post,
   },
-  props: ['finalPosts']
+  props: ['filteredPosts']
 }
 </script>
   

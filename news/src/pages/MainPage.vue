@@ -22,7 +22,7 @@
     </v-row>
     <v-row id="posts-loader">
       <v-progress-circular
-        v-if="!finalPosts.length"
+        v-if="!filteredPosts.length"
         model-value="20"
         indeterminate
         color="blue"
@@ -33,7 +33,7 @@
     </v-row>
     <Posts
       id="posts"
-      :finalPosts="finalPosts"
+      :filteredPosts="filteredPosts"
     />
   </div>
 </template>
@@ -53,7 +53,7 @@ export default {
     return {
       posts: [],
       filterKeyword: '',
-      finalPosts: [],
+      filteredPosts: [],
       tabs: ['all', 'tags', 'authors'],
       defaultTab: 'all',
     }
@@ -64,11 +64,11 @@ export default {
   },
   watch: {
     filterKeyword() {
-      if (!this.filterKeyword.trim()) this.finalPosts = this.posts;
+      if (!this.filterKeyword.trim()) this.filteredPosts = this.posts;
       else {
         switch (this.defaultTab) {
           case 'all':
-            this.finalPosts = this.posts
+            this.filteredPosts = this.posts
               .filter((post) => 
                   post.author.username.toLowerCase().includes(this.filterKeyword.trim().toLowerCase()) ||
                   post.title.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
@@ -86,11 +86,11 @@ export default {
               .reduce((uniq_tags, tag) => { if (uniq_tags.includes(tag)) { return uniq_tags } return [...uniq_tags, tag] }, [])
               .filter((tag) => tag.includes(this.filterKeyword.toLowerCase().trim()) )
             
-            this.finalPosts  = this.posts.filter((post) => post.tags.some((tag) => tags_rel_word.includes(tag.text.toLowerCase())))
+            this.filteredPosts  = this.posts.filter((post) => post.tags.some((tag) => tags_rel_word.includes(tag.text.toLowerCase())))
             break;
           }
           case 'authors':
-            this.finalPosts = this.posts.filter((post) => post.author.username.toLowerCase().includes(this.filterKeyword.toLowerCase().trim()));
+            this.filteredPosts = this.posts.filter((post) => post.author.username.toLowerCase().includes(this.filterKeyword.toLowerCase().trim()));
             break;
         }
       }
@@ -99,7 +99,7 @@ export default {
   async created() {
     await this.fetchPosts();
     this.posts = this.allPosts;
-    this.finalPosts = [...this.posts];
+    this.filteredPosts = [...this.posts];
   }
 }
 </script>
