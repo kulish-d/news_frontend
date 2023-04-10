@@ -68,16 +68,32 @@ export default {
       else {
         switch (this.defaultTab) {
           case 'all':
-            console.log('we here');
+            console.log(typeof this.filterKeyword, this.filterKeyword)
+            this.finalPosts = this.posts
+              .filter((post) => 
+                  post.author.username.toLowerCase().includes(this.filterKeyword.trim().toLowerCase()) ||
+                  post.title.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
+                  post.text.toLowerCase().includes(this.filterKeyword.toLowerCase()) ||
+                  post.tags
+                    .some(tag =>
+                        tag.text.toLowerCase().includes(this.filterKeyword.toLowerCase())
+                    )
+                  )
             break;
-          case 'tags':
-            console.log("it's tags!!!");
+          case 'tags': {
+            let tags_rel_word = this.posts.map((post) => { return post.tags })
+              .map((tag) => { return tag.map((tag) => { return tag.text.toLowerCase() }) })
+              .reduce((res, cur) => res.concat(cur), [])
+              .reduce((uniq_tags, tag) => { if (uniq_tags.includes(tag)) { return uniq_tags } return [...uniq_tags, tag] }, [])
+              .filter((tag) => tag.includes(this.filterKeyword.toLowerCase().trim()) )
+            
+            this.finalPosts  = this.posts.filter((post) => post.tags.some((tag) => tags_rel_word.includes(tag.text.toLowerCase())))
             break;
+          }
           case 'authors':
             this.finalPosts = this.posts.filter((post) => post.author.username.toLowerCase().includes(this.filterKeyword.toLowerCase().trim()));
             break;
         }
-        console.log(this.finalPosts)
       }
     }
   },
