@@ -68,7 +68,6 @@ export default {
       else {
         switch (this.defaultTab) {
           case 'all':
-            console.log(typeof this.filterKeyword, this.filterKeyword)
             this.finalPosts = this.posts
               .filter((post) => 
                   post.author.username.toLowerCase().includes(this.filterKeyword.trim().toLowerCase()) ||
