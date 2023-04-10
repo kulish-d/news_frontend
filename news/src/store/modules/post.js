@@ -1,5 +1,9 @@
 import {axios_request} from '../../../api/post'
 export default {
+  state: {
+    posts: []
+  },
+  
   actions: {
     async fetchPosts(ctx) {
       await axios_request
@@ -13,9 +17,7 @@ export default {
       state.posts = posts
     }
   },
-  state: {
-    posts: []
-  },
+
   getters: {
     allPosts(state) {
       return state.posts

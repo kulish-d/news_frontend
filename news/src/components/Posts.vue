@@ -1,7 +1,7 @@
 <template>
   <div>
     <Post
-      v-for="post in allPosts"
+      v-for="post in finalPosts"
       v-bind:key="post.id"
       :post="post"
     />
@@ -10,8 +10,6 @@
       
 <script>
 
-import {mapGetters, mapActions} from 'vuex';
-
 import Post from '../components/Post.vue';
 
 export default {
@@ -19,11 +17,7 @@ export default {
   components: {
     Post,
   },
-  computed: mapGetters(['allPosts']),
-  methods: mapActions(['fetchPosts']),
-  async mounted() {
-    this.fetchPosts();
-  }
+  props: ['finalPosts']
 }
 </script>
   
