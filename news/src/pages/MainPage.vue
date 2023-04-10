@@ -2,13 +2,22 @@
   <div id="main-page">
     <Header/>
     <v-row id="searcher">
-      <v-col cols="6">
+      <v-col cols="4">
         <v-text-field
           v-model="filterKeyword"
           placeholder="Search content"
           autofocus
         >
         </v-text-field>
+      </v-col>
+      <v-col cols="4">
+        <v-select
+          label="Filter by?"
+          :items="tabs"
+          v-model="defaultTab"
+          variant="underlined"
+        >
+        </v-select>
       </v-col>
     </v-row>
     <v-row id="posts-loader">
@@ -45,6 +54,8 @@ export default {
       posts: [],
       filterKeyword: '',
       finalPosts: [],
+      tabs: ['all', 'tags', 'authors'],
+      defaultTab: 'all',
     }
   },
   computed: mapGetters(['allPosts']),
@@ -53,9 +64,19 @@ export default {
   },
   watch: {
     filterKeyword() {
-      if (!this.filterKeyword) this.finalPosts = this.posts;
+      if (!this.filterKeyword.trim()) this.finalPosts = this.posts;
       else {
-        this.finalPosts = this.posts.filter((post) => post.author.username.toLowerCase().includes(this.filterKeyword.toLowerCase()))
+        switch (this.defaultTab) {
+          case 'all':
+            console.log('we here');
+            break;
+          case 'tags':
+            console.log("it's tags!!!");
+            break;
+          case 'authors':
+            this.finalPosts = this.posts.filter((post) => post.author.username.toLowerCase().includes(this.filterKeyword.toLowerCase().trim()));
+            break;
+        }
         console.log(this.finalPosts)
       }
     }
