@@ -38,7 +38,7 @@
     <div class="text-center" id="pagination-bar">
       <v-pagination
         v-model="currentPage"
-        :total-visible="totalVisiblePages"
+        :total-visible="5"
         :length="totalPages"
         circle
       >
@@ -68,7 +68,6 @@ export default {
       defaultTab: 'all',
       currentPage: 1,
       totalPages: 1,
-      totalVisiblePages: 1,
       postsToRender: [],
     }
   },
@@ -104,7 +103,6 @@ export default {
     },
     calculateCountPages() {
       this.totalPages = Math.ceil(this.filteredPosts.length / POSTS_ON_PAGE);
-      this.totalVisiblePages = Math.ceil(this.totalPages * 0.7)
     },
     slicePosts() {
       this.postsToRender = this.filteredPosts.slice((this.currentPage - 1) * POSTS_ON_PAGE, this.currentPage * POSTS_ON_PAGE)
