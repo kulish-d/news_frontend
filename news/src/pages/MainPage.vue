@@ -33,8 +33,17 @@
     </v-row>
     <Posts
       id="posts"
-      :filteredPosts="filteredPosts"
+      :filteredPosts="postsToRender"
     />
+    <div class="text-center" id="pagination-bar">
+      <v-pagination
+        v-model="currentPage"
+        :total-visible="totalVisiblePages"
+        :length="totalPages"
+        circle
+      >
+      </v-pagination>
+  </div>
   </div>
 </template>
 
@@ -43,6 +52,7 @@ import {mapGetters, mapActions} from 'vuex';
 
 import Posts from '../components/Posts.vue'
 import Header from '../components/Header.vue'
+import { POSTS_ON_PAGE } from '../../constants'
 export default {
   name: 'MainPage',
   components: {
@@ -56,9 +66,15 @@ export default {
       filteredPosts: [],
       tabs: ['all', 'tags', 'authors'],
       defaultTab: 'all',
+      currentPage: 1,
+      totalPages: 1,
+      totalVisiblePages: 1,
+      postsToRender: [],
     }
   },
-  computed: mapGetters(['allPosts']),
+  computed: {
+    ...mapGetters(['allPosts']),
+  },
   methods: {
     ...mapActions(['fetchPosts']),
     filterPostsByAllFields(posts) {
@@ -86,6 +102,13 @@ export default {
                 post.author.username.toLowerCase().includes(this.filterKeyword.toLowerCase().trim())
               );
     },
+    calculateCountPages() {
+      this.totalPages = Math.ceil(this.filteredPosts.length / POSTS_ON_PAGE);
+      this.totalVisiblePages = Math.ceil(this.totalPages * 0.7)
+    },
+    slicePosts() {
+      this.postsToRender = this.filteredPosts.slice((this.currentPage - 1) * POSTS_ON_PAGE, this.currentPage * POSTS_ON_PAGE)
+    },
   },
   watch: {
     filterKeyword() {
@@ -103,13 +126,19 @@ export default {
             this.filteredPosts = this.filterPostsByAuthors(this.posts);
             break;
         }
+        this.slicePosts();
       }
-    }
+    },
+    currentPage() {
+      this.slicePosts();
+    },
   },
   async created() {
     await this.fetchPosts();
     this.posts = this.allPosts;
     this.filteredPosts = [...this.posts];
+    this.calculateCountPages();
+    this.slicePosts();
   }
 }
 </script>
@@ -123,5 +152,8 @@ export default {
   }
   #posts-loader {
     margin-bottom: 20px;
+  }
+  #pagination-bar {
+    margin-bottom: 10px;
   }
 </style>
