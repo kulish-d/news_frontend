@@ -61,6 +61,31 @@ export default {
   computed: mapGetters(['allPosts']),
   methods: {
     ...mapActions(['fetchPosts']),
+    filterPostsByAllFields(posts) {
+      return posts
+              .filter((post) => 
+                [post.author.username.toLowerCase(), post.title.toLowerCase(), post.text.toLowerCase()]
+                  .some((elem) => elem.includes(this.filterKeyword.toLowerCase().trim()))  ||
+                post.tags
+                  .some(tag =>
+                      tag.text.toLowerCase().includes(this.filterKeyword.toLowerCase().trim())
+                  )
+              )
+    },
+    filterPostsByTags(posts) {
+      return posts
+              .filter((post) => 
+                post.tags.some(tag =>
+                  tag.text.toLowerCase().includes(this.filterKeyword.toLowerCase().trim())
+                )
+              );
+    },
+    filterPostsByAuthors(posts) {
+      return posts
+              .filter((post) =>
+                post.author.username.toLowerCase().includes(this.filterKeyword.toLowerCase().trim())
+              );
+    },
   },
   watch: {
     filterKeyword() {
@@ -68,24 +93,14 @@ export default {
       else {
         switch (this.defaultTab) {
           case 'all':
-            this.filteredPosts = this.posts
-              .filter((post) => 
-                  [post.author.username.toLowerCase(), post.title.toLowerCase(), post.text.toLowerCase()]
-                    .some((elem) => elem.includes(this.filterKeyword.toLowerCase()))  ||
-                  post.tags
-                    .some(tag =>
-                        tag.text.toLowerCase().includes(this.filterKeyword.toLowerCase())
-                    )
-                  )
+            this.filteredPosts = this.filterPostsByAllFields(this.posts);
             break;
           case 'tags': {
-            this.filteredPosts  = this.posts.filter((post) => post.tags.some(tag =>
-              tag.text.toLowerCase().includes(this.filterKeyword.toLowerCase().trim())));
+            this.filteredPosts  = this.filterPostsByTags(this.posts);
             break;
           }
           case 'authors':
-            this.filteredPosts = this.posts.filter((post) =>
-              post.author.username.toLowerCase().includes(this.filterKeyword.toLowerCase().trim()));
+            this.filteredPosts = this.filterPostsByAuthors(this.posts);
             break;
         }
       }
