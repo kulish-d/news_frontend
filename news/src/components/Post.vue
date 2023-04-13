@@ -12,18 +12,18 @@
         <v-card-text>{{ post.text }}</v-card-text>
         <div v-if="post.tags"></div>
           <PostTag
-              :tag="tag.text"
-              v-bind:key="tag.id"
-              v-for="tag in post.tags"
+            :tag="tag.text"
+            v-bind:key="tag.id"
+            v-for="tag in post.tags"
           />
       </div>
       <div id="right-part-card">
         <v-img
-         :src="post.image"
-         contain
-         max-width="300"
-         max-height="200"
-         id="post-img">
+          :src="post.image"
+          contain
+          max-width="300"
+          max-height="200"
+          id="post-img">
         </v-img>
       </div>
     </v-card>

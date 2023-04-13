@@ -1,5 +1,6 @@
 import MainPage from '@/pages/MainPage';
 
+import { getGoogleUrl } from '../api/gAuth'
 const routes = [
     {
         path: '/',
@@ -10,6 +11,13 @@ const routes = [
         component: () => import('@/pages/UserPage'),
         name: 'users',
         props: true
+    },
+    {
+        path: '/redirect',
+        redirect: () => {
+            window.location.href = getGoogleUrl();
+            return '/redirecting' // not important since redirecting
+        }
     },
 ]
 

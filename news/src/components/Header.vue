@@ -18,6 +18,12 @@
   >
 
     <v-btn
+      v-on:click="googleResponseForCode"
+    >
+      Google
+    </v-btn>
+
+    <v-btn
       id="head-btn-auth"
       color="black"
       elevation="15"
@@ -91,11 +97,21 @@ import {mapGetters} from 'vuex';
 import RegisterForm from './RegisterForm.vue';
 import AuthForm from './AuthForm.vue';
 
+import { getGoogleUrl  } from '../../api/gAuth';
+// import axios from 'axios';
+// import { axios_request } from '../../api/post';
+
 export default {
   name: 'Header',
   components: {
     RegisterForm,
     AuthForm,
+  },
+
+  data() {
+    return {
+      googleLink: '',
+    }
   },
 
   methods: {
@@ -110,10 +126,17 @@ export default {
     openRegisterForm(){
       this.$store.commit('updateRegisterWindow', true);
     },
+
+    googleResponseForCode() {
+      this.$router.push('/redirect')
+    },
+
   },
 
   async mounted() {
     await this.$store.dispatch('getUser');
+    this.googleLink = getGoogleUrl();
+    console.log(this.googleLink)
   },
 
   computed: mapGetters(['isAuth', 'getUsername', 'getMyAva']),
