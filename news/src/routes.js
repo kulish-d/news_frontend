@@ -19,6 +19,10 @@ const routes = [
             return '/redirecting' // not important since redirecting
         }
     },
+    {
+        path: '/callback/',
+        component: () => import('@/pages/GoogleAwaitPage')
+    }
 ]
 
 export default routes;

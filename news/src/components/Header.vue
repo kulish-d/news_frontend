@@ -136,7 +136,7 @@ export default {
   async mounted() {
     await this.$store.dispatch('getUser');
     this.googleLink = getGoogleUrl();
-    console.log(this.googleLink)
+    // console.log(this.googleLink)
   },
 
   computed: mapGetters(['isAuth', 'getUsername', 'getMyAva']),
