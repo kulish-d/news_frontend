@@ -5,9 +5,10 @@ export default {
     userID: null,
     username: null,
     avatar: null,
+
     authWindowIsOpen: false,
     registerWindowIsOpen: false,
-    postWindowIsOpen: false,
+
   },
   
   actions: {
@@ -108,9 +109,6 @@ export default {
       state.registerWindowIsOpen = status;
     },
 
-    updatePostWindow(state, status) {
-      state.postWindowIsOpen = status;
-    }
   },
 
   getters: {
@@ -137,9 +135,5 @@ export default {
     isOpenRegisterWindow(state) {
       return state.registerWindowIsOpen
     },
-
-    isOpenPostWindow(state) {
-      return state.postWindowIsOpen
-    }
   }
 }

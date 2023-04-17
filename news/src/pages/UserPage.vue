@@ -27,7 +27,7 @@
             </v-btn>
 
             <v-btn
-              v-on:click="openPostAddForm"
+              v-on:click="openPostFormToAdd"
               class="ma-2"
               outlined
               color="indigo"
@@ -44,7 +44,6 @@
       >
         <v-card id="edit-profile-form"
           lazy-validation
-          
         >
           <v-container>
           <v-row>
@@ -88,115 +87,6 @@
       >
       </v-progress-circular>
     </div>
-    <v-dialog
-      v-model="isOpenPostWindow"
-      @click:outside="closeForm"
-      persistent
-    >
-      <v-card id="add-post-form-card">
-        <v-card-title>
-          <span>NEW POST</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-text-field
-                label="Title"
-                counter="20"
-                required
-                v-model="PostForm.title"
-              >
-              </v-text-field>
-            </v-row>
-            <v-row>
-              <v-text-field
-                label="Text"
-                counter="200"
-                required
-                v-model="PostForm.text"
-              >
-              </v-text-field>
-            </v-row>
-            <v-row>
-
-              <v-combobox
-                v-model="PostForm.tags"
-                chips
-                clearable
-                label="Tags"
-                multiple
-                hint="Maximum tag size: 15 symbols, for add press Enter"
-                >
-                <template v-slot:selection="{ attrs, item, select, selected }">
-                  <v-chip
-                    v-bind="attrs"
-                    :input-value="selected"
-                    close
-                    @click="select"
-                    @click:close="removeChip(item)"
-                  >
-                    <strong>{{ item }}</strong>&nbsp;
-                  </v-chip>
-                </template>
-              </v-combobox>
-
-            </v-row>
-            <v-row>
-              <v-file-input chips multiple label="Choose the image"
-                v-model="PostForm.image"
-                accept="image/*"
-                :rules="imageRules"
-                hint="required"
-              >
-              </v-file-input>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions id="alerts-and-buttons">
-
-          <v-btn
-            color="blue-darken-1"
-            variant="text"
-            @click="closeForm"
-          >
-            Close
-          </v-btn>
-
-
-          <v-alert
-              v-show="!(this.PostForm.title && this.PostForm.text && this.PostForm.tags.length && this.PostForm.image)"
-              text
-              type="warning"
-              outlined
-              title="Pffff.."
-          >
-            All fields are required!
-          </v-alert>
-
-          <v-alert
-            v-show="addPostError"
-            text
-            type="error"
-            outlined
-            title="Ooops 0_o"
-          >
-            <div v-if="addPostErrorText.title">title: {{ addPostErrorText.title[0] }}</div>
-            <div v-if="addPostErrorText.text">text: {{ addPostErrorText.text[0] }}</div>
-            <div v-if="addPostErrorText.tags">tags: {{ addPostErrorText.tags[0] }}</div>
-            <div v-if="addPostErrorText.image">image: {{ addPostErrorText.image[0] }}</div>
-          </v-alert>
-
-          <v-btn
-            color="blue-darken-1"
-            variant="text"
-            @click="addPost"
-          >
-            Save
-          </v-btn>
-        </v-card-actions>
-        
-      </v-card>
-    </v-dialog>
 
     <v-alert
       v-show="!this.posts.length"
@@ -216,13 +106,13 @@
     >
     </v-progress-circular>
 
-
-
     <Post
       v-for="post in posts"
       v-bind:key="post.id"
       :post="post"
     />
+
+    <PostForm/>
 
   </div>
 </template>
@@ -233,12 +123,13 @@ import { axios_request, BASE_URL } from '../../api/post';
 import { mapGetters } from "vuex";
 
 import Header from '../components/Header.vue';
+import PostForm from '@/components/PostForm.vue';
 import Post from '@/components/Post.vue';
-
 
 export default {
   name: 'UserPage',
   components: {
+    PostForm,
     Header,
     Post,
   },
@@ -254,24 +145,7 @@ export default {
 
       posts: [],
 
-      PostForm: {
-        title: '',
-        text: '',
-        tags: [],
-        image: null,
-      },
-
-      imageRules: [
-        value => {
-          if (value) return true
-          return 'You must choose the image'
-        },
-      ],
-      
       isOpenEditWindow: false,
-
-      addPostError: false,
-      addPostErrorText: '',
     }
   },
 
@@ -298,38 +172,6 @@ export default {
       .then(() => this.openOrCloseEditProfileWindow(false))
     },
 
-    async addPost() {
-      if (this.formIsValid()) {
-        await axios_request.post('/posts/', {
-          title: this.PostForm.title,
-          text: this.PostForm.text,
-          tags: JSON.stringify(this.PostForm.tags.map((tag) => { return tag.replace(/\s+/g, ' ').trim() }).filter((tag) => { return tag !== '' })),
-          image: this.PostForm.image[0]
-        }, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: 'Token ' + localStorage.getItem('token'),
-          }
-        })
-        .then((res) => {
-          if (res.status === 201) {
-            this.closeForm()
-            this.PostForm.title = '',
-            this.PostForm.text = '',
-            this.PostForm.tags = '',
-            this.PostForm.image = null,
-            this.addPostError = false,
-            this.addPostErrorText = '',
-            this.getUserData()
-          }
-          }
-        )
-        .catch((res) => {
-          this.addPostError = true,
-          this.addPostErrorText = res.response.data
-        })
-      }
-    },
 
     openOrCloseEditProfileWindow(status) {
       this.isOpenEditWindow = status;
@@ -339,20 +181,8 @@ export default {
       return this.id == this.$store.getters.getUserId;
     },
 
-    openPostAddForm(){
-      this.$store.commit('updatePostWindow', true);
-    },
-
-    closeForm() {
-      this.$store.commit('updatePostWindow', false);
-    },
-
-    formIsValid() {
-      return !!(this.PostForm.title && this.PostForm.text && this.PostForm.tags.length && this.PostForm.image);
-    },
-
-    removeChip (item) {
-      this.PostForm.tags.splice(this.PostForm.tags.indexOf(item), 1);
+    openPostFormToAdd(){
+      this.$store.commit('updatePostWindow', {isOpen: true});
     },
 
     getUsername() {
@@ -364,7 +194,7 @@ export default {
     await this.getUserData();
   },
 
-  async beforMount() {
+  async beforeMount() {
     await this.showUserActions();
   },
 
@@ -389,7 +219,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style>
   #user-page {
   }
 

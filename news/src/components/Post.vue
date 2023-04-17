@@ -33,6 +33,7 @@
         v-if="post.author.id===getUserId && $route.name==='users'"
       >
         <v-btn
+          @click="edit(post.id)"
           color="primary"
           elevation="15"
           outlined
@@ -66,10 +67,11 @@ export default {
     PostTag,
   },
   methods: {
-    // edit(id) {
-
-    // },
-    ...mapActions(['deletePost']),
+    edit(id) {
+      this.$store.commit('updateCurrentPost', id)
+      
+    },
+    ...mapActions(['deletePost', 'editPost']),
     },
   
   computed: {
