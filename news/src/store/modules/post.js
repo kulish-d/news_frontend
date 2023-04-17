@@ -11,6 +11,13 @@ export default {
       .then((response) => {(this.posts = response.data)});
       ctx.commit('updatePosts', this.posts)
     },
+    async deletePost(ctx , id) {
+      await axios_request
+      .delete(('/posts/' + id))
+      .then((response) => { if (response.status === 204) {
+          this.dispatch('fetchPosts')
+      } })
+    }
   },
   mutations: {
     updatePosts(state, posts) {

@@ -110,6 +110,7 @@ export default {
   },
   watch: {
     filterKeyword() {
+      this.currentPage = 1;
       if (!this.filterKeyword.trim()) this.filteredPosts = this.posts;
       else {
         switch (this.defaultTab) {
@@ -126,6 +127,10 @@ export default {
         }
         this.slicePosts();
       }
+    },
+
+    filteredPosts() {
+      this.calculateCountPages();
     },
     currentPage() {
       this.slicePosts();

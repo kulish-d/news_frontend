@@ -245,7 +245,6 @@ export default {
 
   data() {
     return {
-
       UserDataForm: {
         username: '',
         email: '',
@@ -376,9 +375,14 @@ export default {
         this.getUserData()
       },
     },
+    allPosts() {
+      this.getUserData()
+    }
   },
 
-  computed: mapGetters(['isOpenPostWindow']),
+  computed: {
+    ...mapGetters(['isOpenPostWindow', 'allPosts']),
+  },
 
   props: ['id']
 }
