@@ -106,10 +106,8 @@
     >
     </v-progress-circular>
 
-    <Post
-      v-for="post in posts"
-      v-bind:key="post.id"
-      :post="post"
+    <Posts
+      :filtered-posts="posts"
     />
 
     <PostForm
@@ -126,14 +124,14 @@ import { mapGetters } from "vuex";
 
 import Header from '../components/Header.vue';
 import PostForm from '@/components/PostForm.vue';
-import Post from '@/components/Post.vue';
+import Posts from '@/components/Posts.vue';
 
 export default {
   name: 'UserPage',
   components: {
     PostForm,
     Header,
-    Post,
+    Posts,
   },
 
   data() {

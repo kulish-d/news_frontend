@@ -32,27 +32,20 @@
       </v-progress-circular>
     </v-row>
     <Posts
+      v-if="$store.state.post.posts"
       id="posts"
-      :filteredPosts="postsToRender"
+      :filteredPosts="filteredPosts"
     />
-    <div class="text-center" id="pagination-bar">
-      <v-pagination
-        v-model="currentPage"
-        :total-visible="5"
-        :length="totalPages"
-        circle
-      >
-      </v-pagination>
-  </div>
+
   </div>
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex';
+import { mapActions, mapGetters } from 'vuex' 
 
 import Posts from '../components/Posts.vue'
 import Header from '../components/Header.vue'
-import { POSTS_ON_PAGE } from '../../constants'
+
 export default {
   name: 'MainPage',
   components: {
@@ -66,9 +59,7 @@ export default {
       filteredPosts: [],
       tabs: ['all', 'tags', 'authors'],
       defaultTab: 'all',
-      currentPage: 1,
-      totalPages: 1,
-      postsToRender: [],
+
     }
   },
   computed: {
@@ -101,12 +92,6 @@ export default {
                 post.author.username.toLowerCase().includes(this.filterKeyword.toLowerCase().trim())
               );
     },
-    calculateCountPages() {
-      this.totalPages = Math.ceil(this.filteredPosts.length / POSTS_ON_PAGE);
-    },
-    slicePosts() {
-      this.postsToRender = this.filteredPosts.slice((this.currentPage - 1) * POSTS_ON_PAGE, this.currentPage * POSTS_ON_PAGE)
-    },
   },
   watch: {
     filterKeyword() {
@@ -125,23 +110,15 @@ export default {
             this.filteredPosts = this.filterPostsByAuthors(this.posts);
             break;
         }
-        this.slicePosts();
       }
-    },
-
-    filteredPosts() {
-      this.calculateCountPages();
-    },
-    currentPage() {
-      this.slicePosts();
     },
   },
   async created() {
     await this.fetchPosts();
     this.posts = this.allPosts;
+    
     this.filteredPosts = [...this.posts];
-    this.calculateCountPages();
-    this.slicePosts();
+    // console.log(this.filteredPosts)
   }
 }
 </script>
@@ -156,7 +133,5 @@ export default {
   #posts-loader {
     margin-bottom: 20px;
   }
-  #pagination-bar {
-    margin-bottom: 10px;
-  }
+
 </style>
