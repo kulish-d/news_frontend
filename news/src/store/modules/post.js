@@ -29,6 +29,16 @@ export default {
           Authorization: 'Token ' + localStorage.getItem('token'),
         }
       })
+      .then((res) => {
+        if (res.status === 201) {
+          PostForm.title = '',
+          PostForm.text = '',
+          PostForm.tags = '',
+          PostForm.image = null,
+          this.dispatch('fetchPosts')
+          ctx.commit('updatePostWindow', {isOpen: false})
+    }
+    })
     },
 
     async deletePost(ctx , id) {
@@ -40,18 +50,20 @@ export default {
     },
 
     async editPost(ctx, editForm) {
+      await console.log(editForm)
       await axios_request
-      .patch('/posts/' + this.state.currentPostId, {
-        title: editForm.title,
-        text: editForm.text,
-        tags: JSON.stringify(editForm.tags.map((tag) => { return tag.replace(/\s+/g, ' ').trim() }).filter((tag) => { return tag !== '' })),
-        image: editForm.image[0]
-      }, {
+      .patch('/posts/' + this.state.post.currentPostId + '/', editForm , {
         headers: {
           'Content-Type': 'multipart/form-data',
-          // Authorization: 'Token ' + localStorage.getItem('token'),
+          Authorization: 'Token ' + localStorage.getItem('token'),
         }
       })
+      .then((res) => {
+        if (res.status === 200) {
+          this.dispatch('fetchPosts')
+          ctx.commit('updatePostWindow', {isOpen: false})
+    }
+    })
     }
   },
 
@@ -77,6 +89,10 @@ export default {
 
     isOpenPostWindow(state) {
       return state.postWindow.isOpen
+    },
+
+    getCurrentEditPost(state) {
+      return state.posts.find((post) => post.id === state.currentPostId)
     }
   }
 }

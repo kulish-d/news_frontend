@@ -112,7 +112,9 @@
       :post="post"
     />
 
-    <PostForm/>
+    <PostForm
+      v-if="$store.state.post.postWindow.isOpen"
+    />
 
   </div>
 </template>
@@ -195,6 +197,7 @@ export default {
   },
 
   async beforeMount() {
+    await this.$store.dispatch('fetchPosts')
     await this.showUserActions();
   },
 
@@ -211,7 +214,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isOpenPostWindow', 'allPosts']),
+    ...mapGetters(['isOpenPostWindow', 'allPosts', 'getCurrentEditPost']),
   },
 
   props: ['id']

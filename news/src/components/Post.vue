@@ -69,7 +69,10 @@ export default {
   methods: {
     edit(id) {
       this.$store.commit('updateCurrentPost', id)
-      
+      this.$store.commit('updatePostWindow', {
+        isOpen: true,
+        isEdit: true,
+      })
     },
     ...mapActions(['deletePost', 'editPost']),
     },

@@ -51,7 +51,7 @@
           </v-combobox>
         </v-row>
         <v-row>
-          <v-file-input chips multiple label="Choose the image"
+          <v-file-input label="Choose the image"
             v-model="PostForm.image"
             accept="image/*"
             :rules="imageRules"
@@ -72,6 +72,7 @@
         </v-btn>
 
         <v-alert
+          v-if="!$store.state.post.postWindow.isEdit"
           v-show="!(this.PostForm.title && this.PostForm.text && this.PostForm.tags.length && this.PostForm.image)"
           text
           type="warning"
@@ -95,6 +96,15 @@
         </v-alert>
 
         <v-btn
+          v-if="$store.state.post.postWindow.isEdit"
+          color="blue-darken-1"
+          variant="text"
+          @click="edit"
+        >
+          Save (edit)
+        </v-btn>
+        <v-btn
+          v-else
           color="blue-darken-1"
           variant="text"
           @click="add"
@@ -113,6 +123,7 @@ import { mapActions, mapGetters } from 'vuex'
     name: 'PostForm',
     data() {
       return {
+
         PostForm: {
           title: '',
           text: '',
@@ -131,21 +142,22 @@ import { mapActions, mapGetters } from 'vuex'
         postErrorText: '',
       }
     },
+    beforeMount() {
+      if (this.$store.state.post.postWindow.isEdit) {
+        this.PostForm.title = this.getCurrentEditPost.title
+        this.PostForm.text = this.getCurrentEditPost.text,
+        this.PostForm.tags = this.getCurrentEditPost.tags.map((tag) => { return tag.text })
+      }
+      else {
+        [this.PostForm.title, this.PostForm.text, this.PostForm.tags] = [ '', '', [] ]
+      }
+    },
     methods: {
       ...mapActions(['addPost', 'editPost', 'fetchPosts']),
 
       add() {
         if (this.formIsValid()) {
           this.addPost(this.PostForm)
-          .then((res) => {
-            if (res.status === 201) {
-              this.PostForm.title = '',
-              this.PostForm.text = '',
-              this.PostForm.tags = '',
-              this.PostForm.image = null,
-              this.fetchPosts()
-        }
-        })
           .catch((res) => {
             this.postError = true,
             this.postErrorText = res.response.data
@@ -153,12 +165,21 @@ import { mapActions, mapGetters } from 'vuex'
       }},
 
       edit() {
-        if (this.formIsValid()) {
-          this.editPost(this.PostForm)
-        }
+          let editForm = new FormData()
+          if (this.PostForm.title) editForm.append('title', this.PostForm.title)
+          if (this.PostForm.text) editForm.append('text', this.PostForm.text)
+          if (this.PostForm.tags) editForm.append('tags',
+           JSON.stringify(this.PostForm.tags.map((tag) => { return tag.replace(/\s+/g, ' ').trim() }).filter((tag) => { return tag !== '' })))
+          if (this.PostForm.image) editForm.append('image', this.PostForm.image)
+          this.editPost(editForm)
+          .catch((res) => {
+            this.postError = true,
+            this.postErrorText = res.response.data
+          })
       },
 
       closeForm() {
+          this.postError = false;
           this.$store.commit('updatePostWindow', {isOpen: false});
       },
 
@@ -170,6 +191,6 @@ import { mapActions, mapGetters } from 'vuex'
           this.PostForm.tags.splice(this.PostForm.tags.indexOf(item), 1);
       },
     },
-    computed: mapGetters(['isOpenPostWindow'])
+    computed: mapGetters(['isOpenPostWindow', 'allPosts', 'getCurrentEditPost'])
   }
 </script>
