@@ -107,9 +107,12 @@
     </v-progress-circular>
 
     <Posts
+      v-if="posts"
       :filtered-posts="posts"
     />
-
+    <!-- <div v-else>
+      No posts?
+    </div> -->
     <PostForm
       v-if="$store.state.post.postWindow.isOpen"
     />
@@ -124,7 +127,7 @@ import { mapGetters } from "vuex";
 
 import Header from '../components/Header.vue';
 import PostForm from '@/components/PostForm.vue';
-import Posts from '@/components/Posts.vue';
+import Posts from '@/components/Posts.vue'
 
 export default {
   name: 'UserPage',
@@ -190,14 +193,14 @@ export default {
     }
   },
   
-  async mounted() {
-    await this.getUserData();
+  beforeCreate() {
+    this.getUserData();
   },
 
-  async beforeMount() {
-    await this.$store.dispatch('fetchPosts')
-    await this.showUserActions();
-  },
+  // async beforeMount() {
+  //   await this.$store.dispatch('fetchPosts')
+  //   await this.showUserActions();
+  // },
 
   watch: {
     '$route.params.id': {
@@ -208,7 +211,7 @@ export default {
     },
     allPosts() {
       this.getUserData()
-    }
+    },
   },
 
   computed: {

@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      totalPages: 1,
+      totalPages: 2,
       postsToRender: [],
     }
   },
@@ -44,8 +44,8 @@ export default {
       this.postsToRender = this.filteredPosts.slice((this.currentPage - 1) * POSTS_ON_PAGE, this.currentPage * POSTS_ON_PAGE)
     },
   },
-  async created() {
-    this.postsToRender = await [...this.filteredPosts]
+   beforeUpdate() {
+    this.postsToRender = [...this.filteredPosts]
     this.calculateCountPages();
     this.slicePosts();
     console.log(this.postsToRender)
@@ -53,6 +53,7 @@ export default {
   watch: {
     filteredPosts() {
       this.calculateCountPages();
+      if (this.totalPages < this.currentPage) this.currentPage--
     },
 
     currentPage() {

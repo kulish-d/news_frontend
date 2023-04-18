@@ -32,7 +32,6 @@
       </v-progress-circular>
     </v-row>
     <Posts
-      v-if="$store.state.post.posts"
       id="posts"
       :filteredPosts="filteredPosts"
     />
