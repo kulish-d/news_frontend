@@ -53,7 +53,6 @@ export default {
   watch: {
     filteredPosts() {
       this.calculateCountPages();
-      if (this.totalPages < this.currentPage) this.currentPage--
     },
 
     currentPage() {

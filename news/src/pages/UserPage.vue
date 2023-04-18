@@ -193,7 +193,7 @@ export default {
     }
   },
   
-  beforeCreate() {
+  created() {
     this.getUserData();
   },
 
