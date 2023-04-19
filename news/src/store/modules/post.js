@@ -2,6 +2,7 @@ import {axios_request} from '../../../api/post'
 export default {
   state: {
     posts: [],
+    postsToRender: [],
     postWindow: {
       isOpen: false,
       isEdit: false,
@@ -17,12 +18,19 @@ export default {
       ctx.commit('updatePosts', this.posts)
     },
 
+    // async getCurrentUserPosts(ctx) {
+    //   await axios_request('/users/' + this.state.user.userID + '/posts/')
+    //   .then((res) => {if (res.statusText === 'OK') {
+    //     ctx.commit('updateUserPosts', res.data)
+    // }})
+    // },
+
     async addPost(ctx, PostForm) {
       await axios_request.post('/posts/', {
         title: PostForm.title,
         text: PostForm.text,
         tags: JSON.stringify(PostForm.tags.map((tag) => { return tag.replace(/\s+/g, ' ').trim() }).filter((tag) => { return tag !== '' })),
-        image: PostForm.image[0]
+        image: PostForm.image
       }, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -50,7 +58,6 @@ export default {
     },
 
     async editPost(ctx, editForm) {
-      await console.log(editForm)
       await axios_request
       .patch('/posts/' + this.state.post.currentPostId + '/', editForm , {
         headers: {
@@ -72,6 +79,14 @@ export default {
       state.posts = posts
     },
 
+    // updateUserPosts(state, posts) {
+    //   state.currentUserPosts = posts
+    // },
+
+    updatePostsToRender(state, posts) {
+      state.postsToRender = posts
+    },
+
     updatePostWindow(state, data) {
       state.postWindow.isOpen = data.isOpen
       state.postWindow.isEdit = data.isEdit || false
@@ -87,8 +102,18 @@ export default {
       return state.posts
     },
 
+    // userPosts(state) {
+    //   return state.currentUserPosts
+    // },
+
+
+
     isOpenPostWindow(state) {
       return state.postWindow.isOpen
+    },
+
+    getPostsToRender(state) {
+      return state.postsToRender
     },
 
     getCurrentEditPost(state) {

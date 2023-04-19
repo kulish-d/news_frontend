@@ -5,6 +5,7 @@ export default {
     userID: null,
     username: null,
     avatar: null,
+    
 
     authWindowIsOpen: false,
     registerWindowIsOpen: false,

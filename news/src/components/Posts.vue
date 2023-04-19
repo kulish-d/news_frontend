@@ -1,7 +1,7 @@
 <template>
   <div>
     <Post
-      v-for="post in postsToRender"
+      v-for="post in posts"
       v-bind:key="post.id"
       :post="post"
     />
@@ -22,6 +22,7 @@
 import Post from '../components/Post.vue';
 
 import { POSTS_ON_PAGE } from '../../constants';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Posts',
@@ -31,25 +32,32 @@ export default {
   data() {
     return {
       currentPage: 1,
-      totalPages: 2,
-      postsToRender: [],
+      totalPages: 1,
+      posts: [],
     }
   },
   methods: {
     calculateCountPages() {
-      this.totalPages = Math.ceil(this.filteredPosts.length / POSTS_ON_PAGE);
+      this.totalPages = Math.ceil(this.posts.length / POSTS_ON_PAGE);
     },
 
     slicePosts() {
-      this.postsToRender = this.filteredPosts.slice((this.currentPage - 1) * POSTS_ON_PAGE, this.currentPage * POSTS_ON_PAGE)
+      this.posts = this.posts.slice((this.currentPage - 1) * POSTS_ON_PAGE, this.currentPage * POSTS_ON_PAGE)
     },
   },
-   beforeUpdate() {
-    this.postsToRender = [...this.filteredPosts]
+  //  beforeUpdate() {
+  //   this.postsToRender = [...this.filteredPosts]
+  //   this.calculateCountPages();
+  //   this.slicePosts();
+  //   console.log(this.postsToRender)
+  // },
+  async created() {
+    this.posts = this.getPostsToRender;
     this.calculateCountPages();
     this.slicePosts();
-    console.log(this.postsToRender)
+    console.log(this.posts)
   },
+
   watch: {
     filteredPosts() {
       this.calculateCountPages();
@@ -59,7 +67,8 @@ export default {
       this.slicePosts();
     },
   },
-  props: ['filteredPosts']
+
+  computed: mapGetters(['getPostsToRender'])
 }
 </script>
   
