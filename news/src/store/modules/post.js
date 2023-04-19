@@ -7,8 +7,6 @@ export default {
       isEdit: false,
     },
 
-    someUserPosts: [],
-
     currentPostId: 0,
   },
   
@@ -101,10 +99,6 @@ export default {
   getters: {
     allPosts(state) {
       return state.posts
-    },
-
-    someUserPosts(state) {
-      return state.currentUserPosts
     },
 
     isOpenPostWindow(state) {

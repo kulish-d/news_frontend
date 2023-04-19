@@ -201,9 +201,9 @@ export default {
         this.getUserData()
       },
     },
-    // async allPosts() {
-    //   await this.getUserPosts()
-    // },
+    async allPosts() {
+      await this.getUserPosts()
+    },
   },
 
   computed: {
