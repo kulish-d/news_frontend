@@ -55,14 +55,10 @@ export default {
     return {
       posts: [],
       filterKeyword: '',
-      filteredPosts: [],
       tabs: ['all', 'tags', 'authors'],
       defaultTab: 'all',
 
     }
-  },
-  computed: {
-    ...mapGetters(['allPosts']),
   },
   methods: {
     ...mapActions(['fetchPosts']),
@@ -92,34 +88,30 @@ export default {
               );
     },
   },
-  watch: {
-    filterKeyword() {
-      this.currentPage = 1;
-      if (!this.filterKeyword.trim()) this.filteredPosts = this.posts;
-      else {
-        switch (this.defaultTab) {
+    computed: {
+      ...mapGetters(['allPosts']),
+      filteredPosts() {
+        if (!this.filterKeyword.trim()) return this.posts;
+        else {
+          switch (this.defaultTab) {
           case 'all':
-            this.filteredPosts = this.filterPostsByAllFields(this.posts);
-            break;
+            return this.filterPostsByAllFields(this.posts);
           case 'tags': {
-            this.filteredPosts  = this.filterPostsByTags(this.posts);
-            break;
+            return  this.filterPostsByTags(this.posts);
           }
           case 'authors':
-            this.filteredPosts = this.filterPostsByAuthors(this.posts);
-            break;
+            return this.filterPostsByAuthors(this.posts);
+          default:
+            return this.posts;
         }
       }
-    },
+    }
   },
   async created() {
     await this.fetchPosts();
     this.posts = this.allPosts;
-    
-    this.filteredPosts = [...this.posts];
-    // console.log(this.filteredPosts)
   }
-}
+  }
 </script>
 
 

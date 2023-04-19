@@ -74,7 +74,7 @@ export default {
         isEdit: true,
       })
     },
-    ...mapActions(['deletePost', 'editPost']),
+    ...mapActions(['deletePost']),
     },
   
   computed: {
