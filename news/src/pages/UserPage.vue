@@ -158,7 +158,6 @@ export default {
     },
     
     async getUserPosts() { 
-      console.log(this.id)
       this.posts = await this.getSomeUserPosts(this.id)
     },
 
