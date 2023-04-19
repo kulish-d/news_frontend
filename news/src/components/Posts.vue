@@ -22,7 +22,6 @@
 import Post from '../components/Post.vue';
 
 import { POSTS_ON_PAGE } from '../../constants';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'Posts',
@@ -32,43 +31,19 @@ export default {
   data() {
     return {
       currentPage: 1,
-      totalPages: 1,
-      posts: [],
     }
   },
-  methods: {
-    calculateCountPages() {
-      this.totalPages = Math.ceil(this.posts.length / POSTS_ON_PAGE);
-    },
 
-    slicePosts() {
-      this.posts = this.posts.slice((this.currentPage - 1) * POSTS_ON_PAGE, this.currentPage * POSTS_ON_PAGE)
+  computed: {
+    posts() {
+      return this.filteredPosts.slice((this.currentPage - 1) * POSTS_ON_PAGE, this.currentPage * POSTS_ON_PAGE)
     },
-  },
-  //  beforeUpdate() {
-  //   this.postsToRender = [...this.filteredPosts]
-  //   this.calculateCountPages();
-  //   this.slicePosts();
-  //   console.log(this.postsToRender)
-  // },
-  async created() {
-    this.posts = this.getPostsToRender;
-    this.calculateCountPages();
-    this.slicePosts();
-    console.log(this.posts)
+    totalPages() {
+      return this.filteredPosts.length !== 0 ? Math.ceil(this.filteredPosts.length / POSTS_ON_PAGE) : 1;
+    }
   },
 
-  watch: {
-    filteredPosts() {
-      this.calculateCountPages();
-    },
-
-    currentPage() {
-      this.slicePosts();
-    },
-  },
-
-  computed: mapGetters(['getPostsToRender'])
+  props: ['filteredPosts']
 }
 </script>
   
