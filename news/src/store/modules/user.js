@@ -6,6 +6,7 @@ export default {
     username: null,
     avatar: null,
     
+    someUserData : {},
 
     authWindowIsOpen: false,
     registerWindowIsOpen: false,
@@ -90,8 +91,20 @@ export default {
         }
         })
       }
-    }
+    },
 
+    async getOtherUser(ctx, id) {
+      try {
+        const { data } =  await axios_request('/users/?id=' + id);
+        return {
+          username: data.username,
+          email: data.email,
+          avatar: BASE_URL + data.avatar
+        }
+      } catch (err) {
+        // todo
+      }
+    }
   },
   
   mutations: {

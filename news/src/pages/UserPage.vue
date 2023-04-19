@@ -109,9 +109,7 @@
     <Posts
       :filtered-posts="posts"
     />
-    <!-- <div v-else>
-      No posts?
-    </div> -->
+
     <PostForm
       v-if="$store.state.post.postWindow.isOpen"
     />
@@ -121,7 +119,6 @@
 
 
 <script>
-import { axios_request, BASE_URL } from '../../api/post';
 import { mapActions, mapGetters } from "vuex";
 
 import Header from '../components/Header.vue';
@@ -152,20 +149,17 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchPosts']),
+    ...mapActions(['fetchPosts', 'getSomeUserPosts', 'getOtherUser']),
     async getUserData() {
-      await axios_request('/users/?id=' + this.id).then((res) => {if (res.statusText === 'OK') {
-        this.UserDataForm.username = res.data.username,
-        this.UserDataForm.email = res.data.email,
-        this.UserDataForm.avatar = BASE_URL + res.data.avatar
-      }
-    })},
+      const { username, email, avatar } =  await this.getOtherUser(this.id)
+      this.UserDataForm.username = username;
+      this.UserDataForm.email = email;
+      this.UserDataForm.avatar = avatar;
+    },
     
     async getUserPosts() { 
-      await axios_request('/users/' + this.id + '/posts/')
-      .then((res) => {if (res.statusText === 'OK') {
-        this.posts = res.data
-    }})
+      console.log(this.id)
+      this.posts = await this.getSomeUserPosts(this.id)
     },
 
     changeUserData() {
@@ -195,12 +189,9 @@ export default {
   },
   
   async created() {
-    await this.fetchPosts();
-    await this.getUserData();
-    if (this.id == this.$store.state.user.userID) {
-      this.posts = this.userPosts;
-    }
-    else { await this.getUserPosts(); }
+    this.fetchPosts();
+    this.getUserData();
+    this.getUserPosts(); 
   },
 
   watch: {
@@ -210,13 +201,13 @@ export default {
         this.getUserData()
       },
     },
-    async posts() {
-      await this.getUserPosts()
-    },
+    // async allPosts() {
+    //   await this.getUserPosts()
+    // },
   },
 
   computed: {
-    ...mapGetters(['isOpenPostWindow', 'allPosts', 'userPosts', 'getCurrentEditPost']),
+    ...mapGetters(['isOpenPostWindow', 'allPosts', 'userPosts', 'getCurrentEditPost', 'someUserPosts']),
   },
 
   props: ['id']

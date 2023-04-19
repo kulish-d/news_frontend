@@ -57,7 +57,6 @@ export default {
       filterKeyword: '',
       tabs: ['all', 'tags', 'authors'],
       defaultTab: 'all',
-
     }
   },
   methods: {
