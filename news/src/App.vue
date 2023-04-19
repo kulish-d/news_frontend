@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 
 
 export default {
@@ -16,9 +18,14 @@ export default {
     
   },
 
-  data: () => ({
-  }),
+  methods: {
+    ...mapActions(['getUser', 'getCurrentUserPosts'])
+  },
 
+  async mounted() {
+    await this.getUser();
+    await this.getCurrentUserPosts();
+  }
 
 };
 </script>

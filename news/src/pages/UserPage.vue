@@ -107,7 +107,6 @@
     </v-progress-circular>
 
     <Posts
-      v-if="posts"
       :filtered-posts="posts"
     />
     <!-- <div v-else>
@@ -123,7 +122,7 @@
 
 <script>
 import { axios_request, BASE_URL } from '../../api/post';
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 import Header from '../components/Header.vue';
 import PostForm from '@/components/PostForm.vue';
@@ -153,18 +152,20 @@ export default {
   },
 
   methods: {
+    ...mapActions(['fetchPosts']),
     async getUserData() {
       await axios_request('/users/?id=' + this.id).then((res) => {if (res.statusText === 'OK') {
         this.UserDataForm.username = res.data.username,
         this.UserDataForm.email = res.data.email,
         this.UserDataForm.avatar = BASE_URL + res.data.avatar
       }
-    }).
-    then(() => {
-      axios_request('/users/' + this.id + '/posts/').then((res) => {if (res.statusText === 'OK') {
-         this.posts = res.data
+    })},
+    
+    async getUserPosts() { 
+      await axios_request('/users/' + this.id + '/posts/')
+      .then((res) => {if (res.statusText === 'OK') {
+        this.posts = res.data
     }})
-    })
     },
 
     changeUserData() {
@@ -193,14 +194,14 @@ export default {
     }
   },
   
-  beforeCreate() {
-    this.getUserData();
+  async created() {
+    await this.fetchPosts();
+    await this.getUserData();
+    if (this.id == this.$store.state.user.userID) {
+      this.posts = this.userPosts;
+    }
+    else { await this.getUserPosts(); }
   },
-
-  // async beforeMount() {
-  //   await this.$store.dispatch('fetchPosts')
-  //   await this.showUserActions();
-  // },
 
   watch: {
     '$route.params.id': {
@@ -209,13 +210,13 @@ export default {
         this.getUserData()
       },
     },
-    allPosts() {
-      this.getUserData()
+    async posts() {
+      await this.getUserPosts()
     },
   },
 
   computed: {
-    ...mapGetters(['isOpenPostWindow', 'allPosts', 'getCurrentEditPost']),
+    ...mapGetters(['isOpenPostWindow', 'allPosts', 'userPosts', 'getCurrentEditPost']),
   },
 
   props: ['id']
