@@ -34,10 +34,18 @@ export default {
     }
   },
 
+  beforeUpdate() {
+    while (this.currentPage !== 1) {
+      if (!this.posts.length) this.currentPage--
+      else break
+    }
+  },
+
   computed: {
     posts() {
       return this.filteredPosts.slice((this.currentPage - 1) * POSTS_ON_PAGE, this.currentPage * POSTS_ON_PAGE)
     },
+
     totalPages() {
       return this.filteredPosts.length !== 0 ? Math.ceil(this.filteredPosts.length / POSTS_ON_PAGE) : 1;
     }
