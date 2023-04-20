@@ -10,13 +10,15 @@
           {{post.author.username}}
         </v-card-subtitle>
         <v-card-text>{{ post.text }}</v-card-text>
-        <div v-if="post.tags"></div>
+        <div v-if="post.tags">
           <PostTag
-              :tag="tag.text"
-              v-bind:key="tag.id"
-              v-for="tag in post.tags"
+            :tag="tag.text"
+            v-bind:key="tag.id"
+            v-for="tag in post.tags"
           />
+        </div>
       </div>
+
       <div id="right-part-card">
         <v-img
          :src="post.image"
@@ -26,12 +28,36 @@
          id="post-img">
         </v-img>
       </div>
+
+      <div id="manage-btns"
+        v-if="post.author.id===getUserId && $route.name==='users'"
+      >
+        <v-btn
+          @click="edit(post.id)"
+          color="primary"
+          elevation="15"
+          outlined
+          x-large
+        >
+        EDIT
+        </v-btn>
+        <v-btn
+          @click="deletePost(post.id)"
+          color="error"
+          elevation="15"
+          outlined
+          x-large
+        >
+        DELETE
+        </v-btn>
+      </div>
+
     </v-card>
   </v-col>
 </template>
     
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapActions} from 'vuex';
 
 import PostTag from '../components/PostTag.vue'
 
@@ -40,12 +66,25 @@ export default {
   components: {
     PostTag,
   },
-  computed: mapGetters(['isAuth']),
+  methods: {
+    edit(id) {
+      this.$store.commit('updateCurrentPost', id)
+      this.$store.commit('updatePostWindow', {
+        isOpen: true,
+        isEdit: true,
+      })
+    },
+    ...mapActions(['deletePost']),
+    },
+  
+  computed: {
+    ...mapGetters(['isAuth', 'getUserId']),
+  },
   props: ['post'],
 }
 </script>
 
-<style>
+<style scoped>
   .v-card__subtitle a {
     text-decoration: none;
   }
@@ -56,9 +95,18 @@ export default {
     padding: 15px;
   }
 
+  #manage-btns {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+  
   @media (width < 515px) {
     #post-card {
       flex-direction: column;
+    }
+    #right-part-card {
+      margin-bottom: 20px;
     }
   }
 
