@@ -5,9 +5,12 @@ export default {
     userID: null,
     username: null,
     avatar: null,
+    
+    someUserData : {},
+
     authWindowIsOpen: false,
     registerWindowIsOpen: false,
-    postWindowIsOpen: false,
+
   },
   
   actions: {
@@ -88,8 +91,20 @@ export default {
         }
         })
       }
-    }
+    },
 
+    async getOtherUser(ctx, id) {
+      try {
+        const { data } =  await axios_request('/users/?id=' + id);
+        return {
+          username: data.username,
+          email: data.email,
+          avatar: BASE_URL + data.avatar
+        }
+      } catch (err) {
+        // todo
+      }
+    }
   },
   
   mutations: {
@@ -108,9 +123,6 @@ export default {
       state.registerWindowIsOpen = status;
     },
 
-    updatePostWindow(state, status) {
-      state.postWindowIsOpen = status;
-    }
   },
 
   getters: {
@@ -137,9 +149,5 @@ export default {
     isOpenRegisterWindow(state) {
       return state.registerWindowIsOpen
     },
-
-    isOpenPostWindow(state) {
-      return state.postWindowIsOpen
-    }
   }
 }
