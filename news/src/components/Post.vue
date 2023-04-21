@@ -31,6 +31,7 @@
 
       <div
           id="comment-and-manage-btns"
+          v-if="isAuth"
       >
         <div id="manage-btns"
              v-if="post.author.id===getUserId && $route.name==='users'"
