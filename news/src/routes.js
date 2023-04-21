@@ -11,6 +11,12 @@ const routes = [
         name: 'users',
         props: true
     },
+    {
+        path: '/posts/:id',
+        component: () => import('@/pages/CommentPage.vue'),
+        name: 'posts',
+        props: true
+    }
 ]
 
 export default routes;
