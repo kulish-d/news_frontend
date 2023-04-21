@@ -109,7 +109,11 @@ export default {
   async created() {
     await this.fetchPosts();
     this.posts = this.allPosts;
-  }
+  },
+
+  // async mounted() {
+  //   console.log(this.$router)
+  // },
   }
 </script>
 

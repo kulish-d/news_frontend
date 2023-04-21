@@ -1,13 +1,12 @@
-
-import comment from '@/store/modules/comment';
-
 <template>
     <div>
         <div v-for="com in comments" :key="com.id" >
             <v-col>
                 <v-card elevation="10" outlined shaped width="100%" id="comment-card">
                     <div>
-                        <v-card-subtitle> {{ com.author.email }} </v-card-subtitle>
+                        <v-card-subtitle>
+                            <router-link :to="{name: 'users', params: {id: com.author.id}}">{{ com.author.username }}</router-link>
+                        </v-card-subtitle>
                         <v-card-text>{{ com.text }}</v-card-text>
                     </div>
                     <div

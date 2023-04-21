@@ -173,8 +173,9 @@ import { mapActions, mapGetters } from 'vuex'
           if (this.PostForm.image) editForm.append('image', this.PostForm.image)
           this.editPost(editForm)
           .catch((res) => {
+            console.log(res)
             this.postError = true,
-            this.postErrorText = res.response.data
+            this.postErrorText = res.response.data.tags.find((tag) => { return tag.text }) || res.response.data
           })
       },
 

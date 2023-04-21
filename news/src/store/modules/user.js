@@ -54,9 +54,10 @@ export default {
         email: authForm.email,
         password: authForm.password,
       })
-      .then((res) => {if (res.statusText === 'OK') {
+      .then((res) => {
+        console.log(res.data.access)
         localStorage.setItem('token', res.data.access);
-      }})
+      })
       .then(() => {
         this.dispatch('getUser')
       })
@@ -80,7 +81,7 @@ export default {
             Authorization: 'Token ' + token,
           }
         })
-        .then((res) => { if (res.statusText === 'OK') { 
+        .then((res) => { 
           const server_data  = {
             token: token,
             id: res.data.id,
@@ -89,7 +90,7 @@ export default {
           }
           ctx.commit('updateUser', server_data)
         }
-        })
+        )
       }
     },
 
