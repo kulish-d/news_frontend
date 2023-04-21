@@ -6,9 +6,12 @@ export default {
 
   actions: {
     async fetchComments(ctx, postId) {
+        console.log(postId)
         try {
-            const { data } = await axios_request('/comments/?=' + postId);
-            // console.log(data)
+            let { data } = await axios_request('/comments/');
+            
+            data = data.filter((comment) => { return comment.post === postId })
+            console.log(data)
             ctx.commit('initComments', data)
           }
           catch (err) {

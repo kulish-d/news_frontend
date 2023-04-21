@@ -41,6 +41,7 @@ export default {
 
   data() {
     return {
+      // post: {},
       commentText: '',
       comments: [],
     }
@@ -67,7 +68,9 @@ export default {
   async created() {
     await this.fetchPosts()
     await this.fetchComments(this.id)
+    // this.post = this.allPosts.find((post) => post.id === this.id)
     this.comments = this.postComments
+    console.log(this.id, this.comments)
   },
 
   watch: {
