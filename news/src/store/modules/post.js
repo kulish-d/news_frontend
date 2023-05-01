@@ -12,8 +12,9 @@ export default {
   
   actions: {
     async fetchPosts(ctx) {
+      // console.log('we here')
       await axios_request
-      .get('/posts/')
+      .get('/posts')
       .then((response) => {(this.posts = response.data)});
       ctx.commit('updatePosts', this.posts)
     },
@@ -55,9 +56,9 @@ export default {
     async deletePost(ctx , id) {
       await axios_request
       .delete(('/posts/' + id))
-      .then((response) => { if (response.status === 204) {
+      .then(() => { 
           this.dispatch('fetchPosts')
-      } })
+      })
     },
 
     async editPost(ctx, editForm) {
